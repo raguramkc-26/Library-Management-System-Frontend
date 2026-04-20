@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import {
-  getUsers,
-  deleteUser,
-  updateUserRole,
-} from "../services/userService";
+import { getUsers, updateUserRole, deleteUser } from "../services/userService";
 import { toast } from "react-toastify";
 
 const AdminUsers = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUsers();
@@ -15,74 +12,106 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
+
       const data = await getUsers();
-      setUsers(data.users);
-    } catch {
-      toast.error("Failed to load users");
+      setUsers(Array.isArray(data) ? data : []);
+
+    } catch (err) {
+      toast.error(err.message || "Failed to load users");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // ROLE UPDATE
+  const handleRoleChange = async (id, role) => {
+    try {
+      await updateUserRole(id, role);
+      toast.success("Role updated");
+
+      setUsers((prev) =>
+        prev.map((u) => (u._id === id ? { ...u, role } : u))
+      );
+    } catch {
+      toast.error("Failed to update role");
+    }
+  };
+
+  // DELETE USER
   const handleDelete = async (id) => {
-    if (!confirm("Delete user?")) return;
+    if (!confirm("Delete this user?")) return;
 
     try {
       await deleteUser(id);
       toast.success("User deleted");
-      fetchUsers();
+
+      setUsers((prev) => prev.filter((u) => u._id !== id));
     } catch {
       toast.error("Delete failed");
     }
   };
 
-  const handleRoleChange = async (id, role) => {
-    try {
-      await updateUserRole(id, role);
-      toast.success("Role updated");
-      fetchUsers();
-    } catch {
-      toast.error("Role update failed");
-    }
-  };
-
   return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">User Management</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Users Management</h1>
 
-      <div className="bg-white p-4 rounded shadow">
-        {users.map((u) => (
-          <div key={u._id} className="flex justify-between items-center border-b py-3">
+      {/* LOADING */}
+      {loading ? (
+        <p>Loading users...</p>
+      ) : users.length === 0 ? (
+        <p>No users found</p>
+      ) : (
+        <div className="bg-white rounded-xl shadow overflow-x-auto">
+          <table className="w-full text-left">
 
-            <div>
-              <p className="font-medium">{u.name}</p>
-              <p className="text-sm text-gray-500">{u.email}</p>
-            </div>
+            <thead className="bg-gray-100 text-sm">
+              <tr>
+                <th className="p-3">Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-            <div className="flex items-center gap-3">
+            <tbody>
+              {users.map((u) => (
+                <tr key={u._id} className="border-t">
 
-              {/* ROLE DROPDOWN */}
-              <select
-                value={u.role}
-                onChange={(e) =>
-                  handleRoleChange(u._id, e.target.value)
-                }
-                className="border p-1 rounded"
-              >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
+                  <td className="p-3">{u.name}</td>
+                  <td>{u.email}</td>
 
-              {/* DELETE */}
-              <button
-                onClick={() => handleDelete(u._id)}
-                className="text-red-500"
-              >
-                Delete
-              </button>
+                  {/* ROLE DROPDOWN */}
+                  <td>
+                    <select
+                      value={u.role}
+                      onChange={(e) =>
+                        handleRoleChange(u._id, e.target.value)
+                      }
+                      className="border p-1 rounded"
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
 
-            </div>
-          </div>
-        ))}
-      </div>
+                  {/* DELETE */}
+                  <td>
+                    <button
+                      onClick={() => handleDelete(u._id)}
+                      className="text-red-600 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+
+                </tr>
+              ))}
+            </tbody>
+
+          </table>
+        </div>
+      )}
     </div>
   );
 };
