@@ -1,95 +1,118 @@
 import { useEffect, useState } from "react";
-import { getAdminStats, getMonthlyStats } from "../services/adminService";
+import instance from "../instances/instance";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
   const [stats, setStats] = useState({});
-  const [monthly, setMonthly] = useState([]);
+  const [recent, setRecent] = useState([]);
+  const [topBooks, setTopBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    fetchAll();
   }, []);
 
-  const fetchData = async () => {
+  const fetchAll = async () => {
     try {
-      const statsRes = await getAdminStats();
-      const monthlyRes = await getMonthlyStats();
+      const [statsRes, recentRes, topRes] = await Promise.all([
+        instance.get("/admin/stats"),
+        instance.get("/admin/recent"),
+        instance.get("/admin/top-books"),
+      ]);
 
-      setStats(statsRes || {});
-      setMonthly(Array.isArray(monthlyRes) ? monthlyRes : []);
+      setStats(statsRes.data);
+      setRecent(recentRes.data);
+      setTopBooks(topRes.data);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to load admin dashboard");
+      toast.error("Failed to load dashboard");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const pieData = [
-    { name: "Available", value: stats.availableBooks || 0 },
-    { name: "Borrowed", value: stats.borrowedBooks || 0 },
-    { name: "Overdue", value: stats.overdueBooks || 0 },
-  ];
+  const handleNotifyAll = async () => {
+    const message = prompt("Enter notification message");
+
+    if (!message) return;
+
+    try {
+      await instance.post("/admin/notify-all", { message });
+      toast.success("Notification sent to all users");
+    } catch (err) {
+      toast.error("Failed to send notification");
+    }
+  };
+
+  if (loading) return <p className="p-6">Loading dashboard...</p>;
 
   return (
-    <div>
-      {/* HEADER */}
-      <h1 className="text-2xl font-bold mb-6">
-        Admin Dashboard
-      </h1>
+    <div className="p-6">
+
+      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
       {/* STATS */}
       <div className="grid md:grid-cols-5 gap-4 mb-6">
-        <Card title="Books" value={stats.totalBooks} />
-        <Card title="Users" value={stats.totalUsers} />
-        <Card title="Borrowed" value={stats.borrowedBooks} />
-        <Card title="Overdue" value={stats.overdueBooks} />
+        <Card title="Books" value={stats.totalBooks || 0} />
+        <Card title="Users" value={stats.totalUsers || 0} />
+        <Card title="Borrowed" value={stats.borrowed || 0} />
+        <Card title="Overdue" value={stats.overdue || 0} />
         <Card title="Revenue" value={`₹${stats.revenue || 0}`} />
       </div>
 
-      {/* CHARTS */}
+      {/* ACTIONS */}
+      <div className="flex gap-4 mb-6">
+        <button
+          onClick={() => navigate("/admin/add-book")}
+          className="bg-indigo-600 text-white px-4 py-2 rounded"
+        >
+          Add Book
+        </button>
+
+        <button
+          onClick={handleNotifyAll}
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Notify All
+        </button>
+      </div>
+
+      {/* RECENT + TOP */}
       <div className="grid md:grid-cols-2 gap-6">
 
-        {/* PIE CHART */}
+        {/* RECENT */}
         <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="mb-4 font-semibold">Library Overview</h2>
+          <h2 className="mb-4 font-semibold">Recent Activity</h2>
 
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={pieData} dataKey="value" outerRadius={80}>
-                <Cell fill="#6366f1" />
-                <Cell fill="#f59e0b" />
-                <Cell fill="#ef4444" />
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          {recent.length === 0 ? (
+            <p>No activity</p>
+          ) : (
+            recent.map((r) => (
+              <div key={r._id} className="flex justify-between py-2 border-b">
+                <p>{r.book?.title || "Unknown"}</p>
+                <span>{r.status}</span>
+              </div>
+            ))
+          )}
         </div>
 
-        {/* LINE CHART */}
+        {/* TOP BOOKS */}
         <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="mb-4 font-semibold">Monthly Borrowings</h2>
+          <h2 className="mb-4 font-semibold">Top Books</h2>
 
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={monthly}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="total" stroke="#6366f1" />
-            </LineChart>
-          </ResponsiveContainer>
+          {topBooks.length === 0 ? (
+            <p>No data</p>
+          ) : (
+            topBooks.map((b, i) => (
+              <div key={i} className="flex justify-between py-2 border-b">
+                <p>{b.book?.title || "Unknown Book"}</p>
+                <span>{b.count} borrows</span>
+              </div>
+            ))
+          )}
         </div>
 
       </div>
@@ -97,11 +120,10 @@ const AdminDashboard = () => {
   );
 };
 
-// CARD COMPONENT
 const Card = ({ title, value }) => (
-  <div className="bg-white p-4 rounded-xl shadow text-center">
-    <p className="text-gray-500 text-sm">{title}</p>
-    <h2 className="text-xl font-bold">{value || 0}</h2>
+  <div className="bg-white p-4 rounded-xl shadow">
+    <p className="text-sm text-gray-500">{title}</p>
+    <h2 className="text-xl font-bold">{value}</h2>
   </div>
 );
 

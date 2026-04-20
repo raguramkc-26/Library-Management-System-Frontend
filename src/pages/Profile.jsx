@@ -1,50 +1,62 @@
 import { useEffect, useState } from "react";
+import { getMe } from "../services/authServices";
 import instance from "../instances/instance";
-
+import { toast } from "react-toastify";
 const Profile = () => {
-  const [books, setBooks] = useState([]);
+  const [user, setUser] = useState(null);
+  const [borrowings, setBorrowings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await instance.get("/borrow/me");
-        setBooks(res.data.books);
-      } catch (err) {
-        console.error("Error fetching books:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchProfile();
   }, []);
 
-  return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">My Profile</h1>
+  const fetchProfile = async () => {
+    try {
+      const res = await getMe();
+      setUser(res?.user || res?.data || null);
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : books.length === 0 ? (
-        <p>No borrowed books</p>
-      ) : (
-        <div className="space-y-4">
-          {books.map((item) => (
-            <div key={item._id} className="bg-white p-4 rounded shadow">
-              <h2 className="text-xl font-semibold">
-                {item.book?.title}
-              </h2>
-              <p>{item.book?.author}</p>
-              <p>Status: {item.status}</p>
-              <p>
-                Due:{" "}
-                {new Date(item.dueDate).toLocaleDateString()}
-              </p>
-            </div>
-          ))}
+      const borrows = await instance.get("/borrow/me");
+      setBorrowings(borrows.data?.data || borrows.data?.borrowings || []);
+    } catch (err) {
+      toast.error("Failed to load profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <h1 className="text-xl font-bold mb-4">Profile</h1>
+
+      {user && (
+        <div className="bg-white p-4 rounded shadow mb-4">
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Role:</strong> {user.role}</p>
         </div>
       )}
+
+      <div className="bg-white p-4 rounded shadow">
+        <h2 className="font-semibold mb-2">Borrow History</h2>
+
+        {borrowings.length === 0 && <p>No history</p>}
+
+        {borrowings.map((b) => (
+          <div key={b._id} className="border-b py-2">
+            <p>{b.book?.title}</p>
+            <p className="text-sm text-gray-500">{b.status}</p>
+            <p className="text-xs text-gray-400">
+              Due: {new Date(b.dueDate).toLocaleDateString()}
+            </p>
+            {b.fineAmount > 0 && (
+              <p className="text-red-500 text-xs">
+                Fine: ₹{b.fineAmount} 
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

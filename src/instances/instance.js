@@ -1,11 +1,20 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_URL;
-
 const instance = axios.create({
-    baseURL: baseURL,
-    withCredentials: true,
+  baseURL: import.meta.env.VITE_API_URL, 
+  withCredentials: true,                 // cookies
 });
-console.log("ENV:", import.meta.env);
-console.log("BASE URL:", import.meta.env.VITE_API_URL);
+
+// Optional: global error handling
+instance.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err?.response?.status === 401) {
+      // you can also emit an event or redirect here
+      console.warn("Unauthorized (401)");
+    }
+    return Promise.reject(err);
+  }
+);
+
 export default instance;

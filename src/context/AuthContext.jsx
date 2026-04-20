@@ -1,55 +1,36 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { getMe, logoutUser } from "../services/authServices";
+import { createContext, useContext, useEffect, useState } from "react";
+import instance from "../instances/instance";
 
-const AuthContext = createContext();
-  export const AuthProvider = ({ children }) => {
+export const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const isAuthenticated = !!user;
 
   useEffect(() => {
-    const fetchUser = async () => {
+    (async () => {
       try {
-        const res = await getMe();
-        setUser(res.user);
-      } catch (err) {
-        if (err.response?.status === 401) {
-          setUser(null); // normal
-        } else {
-          console.error("Auth error:", err);
-        }
+        const res = await instance.get("/auth/getMe");
+        setUser(res?.data?.data || null);
+      } catch {
+        setUser(null);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchUser();
+    })();
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-  };
+  const login = (userData) => setUser(userData);
 
   const logout = async () => {
     try {
-      await logoutUser(); 
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
+      await instance.post("/auth/logout");
+    } catch {}
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,                
-        setUser,
-        isAuthenticated,
-        login,
-        logout,
-        loading,
-      }}
-    >
+    <AuthContext.Provider value={{ user, setUser, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
