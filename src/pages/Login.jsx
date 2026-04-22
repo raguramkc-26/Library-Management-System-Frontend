@@ -23,21 +23,25 @@ const Login = () => {
             if (!response.token) {
             throw new Error("Token not received");
             }
+            //store token
             localStorage.setItem("token", response.token);
+            //store user
             login(response.user); 
             toast.success("Login successful");
-            const role = response.user.role;
 
         if (role === "admin") {
         navigate("/admin/dashboard");
         } else {
         navigate("/dashboard");
-        }
-        } catch (error) {
-            const errorMessage = error.response?.data?.message || error.message || "Login failed";
-            toast.error(errorMessage);
-        }
-    }
+         }
+
+  } catch (error) {
+    console.error(error);
+    toast.error(
+      error.response?.data?.message || error.message || "Login failed"
+    );
+  }
+};
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
