@@ -1,16 +1,23 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, 
-  withCredentials: true,                 // cookies
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Optional: global error handling
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
 instance.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err?.response?.status === 401) {
-      // you can also emit an event or redirect here
       console.warn("Unauthorized (401)");
     }
     return Promise.reject(err);

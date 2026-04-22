@@ -56,13 +56,14 @@ const BookDetails = () => {
   // REVIEW
   const handleReview = async () => {
     try {
-      await instance.post(`/reviews/${id}`, { rating, comment });
+      await instance.post(`/reviews/${id}`, { rating: Number(rating), comment });
       toast.success("Review added");
       setRating("");
       setComment("");
       fetchData();
-    } catch {
-      toast.error("Failed to add review");
+    } catch(err) {
+      console.log(err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to add review");
     }
   };
 

@@ -19,6 +19,7 @@ const Login = () => {
 
         try {
             const response = await loginUser(formData);
+            localStorage.setItem("token", response.token);
             login(response.user); 
             toast.success("Login successful");
             const role = response.user.role;
