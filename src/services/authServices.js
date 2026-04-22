@@ -5,8 +5,8 @@ export const registerUser = async (userData) => {
     return response.data;
 }
 
-export const loginUser = async (credentials) => {
-    const response = await instance.post('/auth/login', credentials);
+export const loginUser = async (data) => {
+    const response = await instance.post('/auth/login', data);
     return res.data;
 };
 

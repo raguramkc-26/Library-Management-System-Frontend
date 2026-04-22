@@ -14,35 +14,40 @@ const Login = () => {
         password: ""
     });
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+   const handleLogin = async (e) => {
+  e.preventDefault();
 
-        try {
-            const response = await loginUser(formData);
-            console.log("LOGIN RESPONSE:", response);
-            if (!response.token) {
-            throw new Error("Token not received");
-            }
-            //store token
-            localStorage.setItem("token", response.token);
-            //store user
-            login(response.user); 
-            toast.success("Login successful");
+  try {
+    const response = await loginUser(formData);
 
-        if (role === "admin") {
-        navigate("/admin/dashboard");
-        } else {
-        navigate("/dashboard");
-         }
+    console.log("LOGIN RESPONSE:", response);
+
+    if (!response.token) {
+      throw new Error("Token not received");
+    }
+
+    localStorage.setItem("token", response.token);
+
+    login(response.user);
+
+    toast.success("Login successful");
+
+    const role = response.user.role;
+
+    if (role === "admin") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/dashboard");
+    }
 
   } catch (error) {
     console.error(error);
+
     toast.error(
       error.response?.data?.message || error.message || "Login failed"
     );
   }
 };
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
