@@ -19,9 +19,9 @@ const Login = () => {
 
         try {
             const response = await loginUser(formData);
-            const token = response.data?.token || response.token;
-            if (!token) {
-            throw new Error("Token not received from backend");
+            console.log("LOGIN RESPONSE:", response);
+            if (!response.token) {
+            throw new Error("Token not received");
             }
             localStorage.setItem("token", response.token);
             login(response.user); 
