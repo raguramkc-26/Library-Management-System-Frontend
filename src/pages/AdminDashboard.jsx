@@ -23,9 +23,9 @@ const AdminDashboard = () => {
         instance.get("/admin/top-books"),
       ]);
 
-      setStats(statsRes.data);
-      setRecent(recentRes.data);
-      setTopBooks(topRes.data);
+    setStats(statsRes.data?.data || statsRes.data);
+    setRecent(recentRes.data?.data || recentRes.data);
+    setTopBooks(topRes.data?.data || topRes.data);
     } catch (err) {
       console.error(err);
       toast.error("Failed to load dashboard");
