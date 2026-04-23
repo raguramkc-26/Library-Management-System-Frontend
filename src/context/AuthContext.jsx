@@ -8,9 +8,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     (async () => {
       try {
         const res = await instance.get("/auth/getMe");
+        const userData = res.data?.data || res.data?.user || res.data;
         setUser(res?.data?.data || null);
       } catch {
         setUser(null);
@@ -35,5 +41,6 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+console.log("AUTH USER:", user);
 
 export const useAuth = () => useContext(AuthContext);

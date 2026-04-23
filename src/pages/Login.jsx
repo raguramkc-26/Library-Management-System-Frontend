@@ -27,7 +27,7 @@ const Login = () => {
     }
 
     localStorage.setItem("token", response.token);
-
+    const userData = response.user || response.data?.user || response.data;
     login(response.user);
 
     toast.success("Login successful");
