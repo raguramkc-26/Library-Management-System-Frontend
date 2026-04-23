@@ -17,8 +17,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await instance.get("/auth/getMe");
         const userData = res.data?.user;
-        console.log("GETME RESPONSE:", res.data);
-        console.log("EXTRACTED USER:", userData);
         setUser(userData || null); 
       } catch (err) {
         console.log("GETME ERROR:", err.response?.data || err.message);
