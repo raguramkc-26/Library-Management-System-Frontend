@@ -8,13 +8,16 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
     fetchProfile();
+    }
   }, []);
 
   const fetchProfile = async () => {
     try {
       const res = await getMe();
-      setUser(data.user);
+      setUser(res.user);
 
       const borrows = await instance.get("/borrow/me");
       setBorrowings(borrows.data?.data || borrows.data?.borrowings || []);
