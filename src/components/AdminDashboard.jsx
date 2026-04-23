@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import instance from "../instances/instance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import AdminChart from "../components/AdminChart";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -9,13 +10,14 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState({});
   const [recent, setRecent] = useState([]);
   const [topBooks, setTopBooks] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    fetchAll();
   }, []);
 
-  const fetchData = async () => {
+  const fetchAll = async () => {
     try {
       const statsRes = await instance.get("/admin/stats");
       setStats(statsRes.data);
@@ -25,6 +27,10 @@ const AdminDashboard = () => {
 
       const topRes = await instance.get("/admin/top-books");
       setTopBooks(topRes.data);
+
+      const chartRes = await instance.get("/admin/stats/monthly");
+      setChartData(chartRes.data);
+
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || "Dashboard failed");
@@ -48,6 +54,9 @@ const AdminDashboard = () => {
         <Card title="Overdue" value={stats.overdue} color="bg-red-500" />
         <Card title="Revenue" value={`₹${stats.revenue}`} color="bg-purple-600" />
       </div>
+
+      {/* CHART */}
+      <AdminChart data={chartData} />
 
       {/* ACTIONS */}
       <div className="flex gap-4">
@@ -97,7 +106,7 @@ const AdminDashboard = () => {
 /* COMPONENTS */
 
 const Card = ({ title, value, color }) => (
-  <div className={`p-5 rounded-xl text-white shadow ${color}`}>
+  <div className={`p-5 rounded-xl text-white shadow-lg ${color}`}>
     <p className="text-sm opacity-80">{title}</p>
     <h2 className="text-xl font-bold">{value || 0}</h2>
   </div>
