@@ -19,7 +19,7 @@ const Sidebar = () => {
     { name: "Reviews", path: "/admin/reviews", icon: Book },
   ];
 
-  const links = user?.role === "admin" ? adminLinks : userLinks;
+  const links = user && user.role === "admin" ? adminLinks : userLinks;
 
   return (
     <div className="w-64 bg-indigo-600 text-white min-h-screen p-5">

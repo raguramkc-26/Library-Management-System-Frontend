@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await instance.get("/auth/getMe");
         const userData = res.data?.data || res.data?.user || res.data;
-        setUser(res?.data?.data || null);
+        setUser(res?.data?.user || null);
       } catch {
         setUser(null);
       } finally {

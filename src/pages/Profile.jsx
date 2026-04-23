@@ -17,7 +17,7 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       const res = await getMe();
-      setUser(res.user);
+      setUser(res?.user);
 
       const borrows = await instance.get("/borrow/me");
       setBorrowings(borrows.data?.data || borrows.data?.borrowings || []);
@@ -37,7 +37,7 @@ const Profile = () => {
         <div className="bg-white p-4 rounded shadow mb-4">
           <p><strong>Name:</strong> {user.name}</p>
           <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
+          <p><strong>Role:</strong> {user?.role}</p>
         </div>
       )}
 
