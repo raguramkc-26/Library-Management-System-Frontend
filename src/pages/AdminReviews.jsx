@@ -9,7 +9,7 @@ const AdminReviews = () => {
   const fetchReviews = async () => {
     try {
       const res = await instance.get("/reviews/pending");
-      setReviews(res.data.reviews);
+      setReviews(res.data.data || []);
     } catch (err) {
       toast.error("Failed to load reviews");
     } finally {
@@ -37,7 +37,7 @@ const AdminReviews = () => {
     <div className="p-6 max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Pending Reviews</h2>
 
-      {reviews.length === 0 ? (
+      {!loading && reviews.length === 0 ? (
         <div className="text-center text-gray-500 py-10">
           <p className="text-lg">No pending reviews</p>
         </div>
