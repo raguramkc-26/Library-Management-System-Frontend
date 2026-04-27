@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const login = (userData, token) => {
     localStorage.setItem("token", token);
     setUser(userData);
-  }
+  };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -21,17 +21,48 @@ export const AuthProvider = ({ children }) => {
     const loadUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return setLoading(false);
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
 
         const res = await instance.get("/auth/me");
+
+        if (!res?.data?.user) {
+          throw new Error("Invalid user data");
+        }
+
         setUser(res.data.user);
-      } catch {
+
+      } catch (err) {
+        console.error("Auth Error:", err);
+
+        localStorage.removeItem("token");
         setUser(null);
+
       } finally {
         setLoading(false);
       }
     };
+
     loadUser();
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setUser(null);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   return (

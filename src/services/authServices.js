@@ -1,13 +1,13 @@
 import instance from "../instances/instance";
 
-export const registerUser = async (userData) => {
-  const res = await instance.post("/auth/register", userData);
+export const registerUser = async (data) => {
+  const res = await instance.post("/auth/register", Data);
   return res.data;
 };
 
 export const loginUser = async (data) => {
   const res = await instance.post("/auth/login", data);
-  return res.data; // IMPORTANT: always return data
+  return res.data; 
 };
 
 export const getMe = async () => {
