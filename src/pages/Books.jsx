@@ -18,9 +18,7 @@ const Books = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const delay = setTimeout(() => {
-      fetchBooks();
-    }, 400);
+    const delay = setTimeout(fetchBooks, 400);
     return () => clearTimeout(delay);
   }, [keyword, genre, available, page]);
 
@@ -82,15 +80,15 @@ const Books = () => {
         )}
       </div>
 
-      {/* GUIDE TEXT */}
+      {/* GUIDE */}
       <p className="text-gray-500 mb-6">
-        Browse books. Click a book to borrow or add a review.
+        Click a book to view details, borrow or add a review.
       </p>
 
       {/* FILTERS */}
       <div className="grid md:grid-cols-4 gap-4 mb-6">
         <input
-          placeholder="Search by title / author"
+          placeholder="Search title / author"
           value={keyword}
           onChange={handleFilterChange(setKeyword)}
           className="border p-2 rounded"
@@ -134,13 +132,9 @@ const Books = () => {
               <p className="text-gray-600 text-sm">{b.author}</p>
               <p className="text-xs mt-2 text-gray-500">{b.genre}</p>
 
-              <span
-                className={`mt-3 inline-block text-sm font-semibold ${
-                  b.status === "Available"
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
+              <span className={`mt-3 inline-block text-sm font-semibold ${
+                b.status === "Available" ? "text-green-600" : "text-red-600"
+              }`}>
                 {b.status}
               </span>
 
@@ -167,7 +161,7 @@ const Books = () => {
       )}
 
       {/* PAGINATION */}
-      <div className="flex justify-center items-center gap-4 mt-8">
+      <div className="flex justify-center gap-4 mt-8">
         <button
           onClick={() => setPage((p) => p - 1)}
           disabled={page === 1}
@@ -176,9 +170,7 @@ const Books = () => {
           Prev
         </button>
 
-        <span>
-          Page {page} of {totalPages}
-        </span>
+        <span>Page {page} of {totalPages}</span>
 
         <button
           onClick={() => setPage((p) => p + 1)}

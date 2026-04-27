@@ -40,18 +40,9 @@ const BookDetails = () => {
       toast.success("Book borrowed");
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message);
+      toast.error(err.response?.data?.message || "Borrow failed");
     } finally {
       setBorrowing(false);
-    }
-  };
-
-  const handleReserve = async () => {
-    try {
-      await instance.post(`/reservation/${id}`);
-      toast.success("Book reserved");
-    } catch (err) {
-      toast.error(err.response?.data?.message);
     }
   };
 
@@ -61,122 +52,113 @@ const BookDetails = () => {
 
     try {
       await instance.post(`/reviews/${id}`, { rating, comment });
-
       toast.success("Review submitted for approval");
       setRating(0);
       setComment("");
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to add review");
+      toast.error(err.response?.data?.message || "Review failed");
     }
   };
 
   if (!book) return <p className="p-6">Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
 
-        {/* BOOK */}
-        <div className="bg-white rounded-xl shadow p-6 grid md:grid-cols-3 gap-6">
+      {/* BOOK */}
+      <div className="bg-white p-6 rounded-xl shadow grid md:grid-cols-3 gap-6">
 
-          <img
-            src={book.image || "https://via.placeholder.com/150"}
-            alt={book.title}
-            className="w-40 h-60 object-cover rounded"
+        <img
+          src={book.image || "https://via.placeholder.com/150"}
+          className="w-40 h-60 object-cover rounded"
+        />
+
+        <div className="md:col-span-2">
+          <h1 className="text-2xl font-bold">{book.title}</h1>
+          <p className="text-gray-600">{book.author}</p>
+          <p className="mt-2">{book.description}</p>
+
+          <p className="mt-2 font-semibold">
+            Status:
+            <span className={`ml-2 ${
+              book.status === "Available" ? "text-green-600" : "text-red-600"
+            }`}>
+              {book.status}
+            </span>
+          </p>
+
+          {user?.role !== "user" && (
+            <p className="text-red-500 text-sm mt-2">
+              Only users can borrow books
+            </p>
+          )}
+
+          <button
+            onClick={handleBorrow}
+            disabled={book.status !== "Available" || borrowing}
+            className="mt-4 bg-green-600 disabled:bg-gray-400 text-white px-5 py-2 rounded"
+          >
+            {borrowing ? "Borrowing..." : "Borrow Book"}
+          </button>
+        </div>
+      </div>
+
+      {/* REVIEW */}
+      {user && (
+        <div className="bg-white p-5 rounded-xl shadow">
+          <h2 className="font-semibold mb-3">Add Review</h2>
+
+          <div className="flex gap-2 text-2xl mb-2">
+            {[1,2,3,4,5].map((star) => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                onMouseEnter={() => setHover(star)}
+                onMouseLeave={() => setHover(null)}
+                className={(hover || rating) >= star ? "text-yellow-400" : "text-gray-300"}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+
+          <textarea
+            placeholder="Write review"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full border p-2 rounded mb-2"
           />
 
-          <div className="md:col-span-2 space-y-3">
-            <h1 className="text-2xl font-bold">{book.title}</h1>
-            <p className="text-gray-600">{book.author}</p>
-            <p className="text-gray-700">{book.description}</p>
-
-            <p>
-              Status:
-              <span className={`ml-2 font-semibold ${
-                book.status === "Available" ? "text-green-600" : "text-red-500"
-              }`}>
-                {book.status}
-              </span>
-            </p>
-
-            <div className="flex gap-3 mt-4">
-              {book.status === "Available" && user?.role === "user" ? (
-                <button
-                  onClick={handleBorrow}
-                  disabled={borrowing}
-                  className="bg-green-600 disabled:bg-gray-400 text-white px-5 py-2 rounded-lg"
-                >
-                  {borrowing ? "Borrowing..." : "Borrow Book"}
-                </button>
-              ) : (
-                <button
-                  onClick={handleReserve}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded"
-                >
-                  Reserve
-                </button>
-              )}
-            </div>
-          </div>
+          <button
+            onClick={handleReview}
+            className="bg-indigo-600 text-white px-4 py-2 rounded"
+          >
+            Submit Review
+          </button>
         </div>
+      )}
 
-        {/* REVIEW */}
-        {user && (
-          <div className="bg-white p-5 rounded-xl shadow">
-            <h2 className="font-semibold mb-3">Add Review</h2>
+      {/* REVIEWS */}
+      <div className="bg-white p-5 rounded-xl shadow">
+        <h2 className="font-semibold mb-4">Reviews</h2>
 
-            <div className="flex gap-2 text-2xl mb-2">
-              {[1,2,3,4,5].map((star) => (
-                <button
-                  key={star}
-                  onClick={() => setRating(star)}
-                  onMouseEnter={() => setHover(star)}
-                  onMouseLeave={() => setHover(null)}
-                  className={(hover || rating) >= star ? "text-yellow-400" : "text-gray-300"}
-                >
-                  ★
-                </button>
-              ))}
+        {reviews.length === 0 ? (
+          <p className="text-gray-400">No reviews yet</p>
+        ) : (
+          reviews.map((r) => (
+            <div key={r._id} className="border-b py-2">
+              <p className="font-medium">{r.user?.name}</p>
+              <p className="text-yellow-500">⭐ {r.rating}</p>
+              <p>{r.comment}</p>
+              <p className="text-xs text-gray-400">
+                {new Date(r.createdAt).toLocaleDateString()}
+              </p>
             </div>
-
-            <textarea
-              placeholder="Write your review"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="w-full border p-2 rounded mb-2"
-            />
-
-            <button
-              onClick={handleReview}
-              className="bg-indigo-600 text-white px-4 py-2 rounded"
-            >
-              Submit Review
-            </button>
-          </div>
+          ))
         )}
-
-        {/* REVIEWS */}
-        <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-semibold mb-4">Reviews</h2>
-
-          {reviews.length === 0 ? (
-            <p>No reviews yet</p>
-          ) : (
-            reviews.map((r) => (
-              <div key={r._id} className="border-b py-2">
-                <p className="font-medium">{r.user?.name}</p>
-                <p className="text-yellow-600 text-sm">⭐ {r.rating}</p>
-                <p>{r.comment}</p>
-                <p className="text-xs text-gray-400">
-                  {new Date(r.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            ))
-          )}
-        </div>
-
       </div>
+
     </div>
   );
 };
