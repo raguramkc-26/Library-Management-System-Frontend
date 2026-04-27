@@ -12,15 +12,5 @@ instance.interceptors.request.use((config) => {
   }
   return config;
 });
-instance.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    const status = error.response?.status;
-    if (status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  }
-);
+
 export default instance;    
