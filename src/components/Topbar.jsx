@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Topbar = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const handleLogout = () => {
     logout();
     Navigate("/login");

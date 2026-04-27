@@ -8,38 +8,34 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const login = (userData, token) => {
+    localStorage.setItem("token", token);
     setUser(userData);
   }
 
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-  }
+  };
 
   useEffect(() => {
     const loadUser = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) return setLoading(false);
 
-        if (!token) {
-          setUser(null);
-          return;
-        }
-
-        const res = await instance.get("/auth/Me");
+        const res = await instance.get("/auth/me");
         setUser(res.data.user);
-      } catch (err) {
+      } catch {
         setUser(null);
       } finally {
         setLoading(false);
       }
     };
-
     loadUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

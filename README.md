@@ -92,19 +92,19 @@ Project Structure
 
 ---
 
-⚠️ Known Issues
+Known Issues
 - Reviews require admin approval before display
 - Reservation triggers only when book is unavailable
 - UI is basic and can be further enhanced
 
-🔮 Future Improvements
+Future Improvements
 - Advanced analytics dashboard (charts)
 - Real-time notifications (Socket.io)
 - Wishlist / Favorites
 - Infinite scroll & pagination improvements
 - Mobile UI optimization
 
-📝 Important Notes
+Important Notes
 
 - ".env" files are not included for security reasons
 - Do not commit sensitive credentials
@@ -112,12 +112,12 @@ Project Structure
 
 ---
 
-👨‍💻 Author
+Author
 
 Raguram KC
 
 ---
 
-📬 API Documentation
+API Documentation
 
-https://documenter.getpostman.com/view/11270312/2sBXqDuPWg
+https://documenter.getpostman.com/view/11270312/2sBXqDuPWg 
