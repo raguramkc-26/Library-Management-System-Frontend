@@ -1,132 +1,130 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginUser } from "../services/authServices";
 import { useAuth } from "../context/AuthContext";
-import { getMe } from "../services/authServices";
 
 const Login = () => {
-    const { login } = useAuth();
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        email: "",
-        password: ""
-    });
+  const { setUser } = useAuth(); 
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await loginUser(formData);
-
-    const token = res.token || res.data?.token;
-    const user = res.user || res.data?.user;
-
-    if (!token || !user) {
-      throw new Error("Invalid login response");
-    }
-    localStorage.setItem("token",token);
-    login(user);
-
-    toast.success("Login successful");
-
-    if (user.role === "admin") {
-      navigate("/admin/dashboard");
-    } else {
-      navigate("/dashboard");
+    if (!formData.email || !formData.password) {
+      return toast.error("Email and password are required");
     }
 
-  } catch (err) {
-    toast.error(
-      error.response?.data?.message || "Login failed"
-    );
-  }
-};
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <div>
-                    <Link to="/" className="flex items-center justify-center space-x-2">
-                        <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-2xl">LMS</span>
-                        </div>
-                    </Link>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
-                        Or{' '}
-                        <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                            create a new account
-                        </Link>
-                    </p>
-                </div>
-                <form className="mt-8 space-y-6"
-                    onSubmit={handleLogin}
-                >
-                    <input type="hidden" name="remember" defaultValue="true" />
-                    <div className="rounded-md shadow-sm -space-y-px">
-                        <div>
-                            <label htmlFor="email-address" className="sr-only">
-                                Email address
-                            </label>
-                            <input
-                                id="email-address"
-                                name="email"
-                                type="email"
-                                autoComplete="email"
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Email address"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="password" className="sr-only">
-                                Password
-                            </label>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Password"
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            />
-                        </div>
-                    </div>
+    try {
+      setLoading(true);
 
-                    <div className="flex items-center justify-end">
-                        <div className="text-sm">
-                            <Link to="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
-                                Forgot your password?
-                            </Link>
-                        </div>
-                    </div>
+      const res = await loginUser(formData);
 
-                    <div>
-                        <button
-                            type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                            Sign in
-                        </button>
-                    </div>
-                </form>
+      const { token, user } = res.data;
 
-                <div
-                    className="mt-6 text-center"
-                >
-                    <Link to="/"
-                        className="text-sm text-blue-600 hover:text-blue-500"
-                    >Back to Home</Link>
-                </div>
+      if (!token || !user) {
+        throw new Error("Invalid login response");
+      }
+
+      localStorage.setItem("token", token);
+
+      setUser(user);
+
+      toast.success("Login successful");
+
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+
+    } catch (err) {
+      console.error("Login Error:", err);
+
+      toast.error(
+        err.response?.data?.message || err.message || "Login failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full space-y-6">
+
+        {/* LOGO */}
+        <div className="text-center">
+          <Link to="/" className="flex justify-center mb-2">
+            <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-2xl">LMS</span>
             </div>
+          </Link>
+
+          <h2 className="text-2xl font-bold">Sign in to your account</h2>
+
+          <p className="text-sm text-gray-600">
+            Or{" "}
+            <Link to="/register" className="text-blue-600 hover:underline">
+              create a new account
+            </Link>
+          </p>
         </div>
-    )
-}
+
+        {/* FORM */}
+        <form onSubmit={handleLogin} className="space-y-4">
+
+          <input
+            type="email"
+            placeholder="Email address"
+            className="w-full border p-2 rounded"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full border p-2 rounded"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+          />
+
+          <div className="text-right text-sm">
+            <Link to="/forgot-password" className="text-blue-600">
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded disabled:bg-gray-400"
+          >
+            {loading ? "Logging in..." : "Sign in"}
+          </button>
+        </form>
+
+        <div className="text-center">
+          <Link to="/" className="text-sm text-blue-600">
+            Back to Home
+          </Link>
+        </div>
+
+      </div>
+    </div>
+  );
+};
 
 export default Login;
