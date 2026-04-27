@@ -25,24 +25,17 @@ const Books = () => {
   const fetchBooks = async () => {
     try {
       setLoading(true);
-
       const res = await instance.get("/books", {
         params: { keyword, genre, available, page },
       });
 
       setBooks(res.data.books || []);
       setTotalPages(res.data.totalPages || 1);
-
     } catch {
       toast.error("Failed to fetch books");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFilterChange = (setter) => (e) => {
-    setter(e.target.value);
-    setPage(1);
   };
 
   const handleDelete = async (id, e) => {
@@ -67,36 +60,31 @@ const Books = () => {
     <div className="max-w-6xl mx-auto p-6">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between mb-6">
         <h1 className="text-2xl font-bold">Books</h1>
 
         {isAdmin && (
           <button
             onClick={() => navigate("/admin/add-book")}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
+            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
           >
             + Add Book
           </button>
         )}
       </div>
 
-      {/* GUIDE */}
-      <p className="text-gray-500 mb-6">
-        Click a book to view details, borrow or add a review.
-      </p>
-
       {/* FILTERS */}
-      <div className="grid md:grid-cols-4 gap-4 mb-6">
+      <div className="grid md:grid-cols-3 gap-4 mb-6">
         <input
-          placeholder="Search title / author"
+          placeholder="Search..."
           value={keyword}
-          onChange={handleFilterChange(setKeyword)}
+          onChange={(e) => setKeyword(e.target.value)}
           className="border p-2 rounded"
         />
 
         <select
           value={genre}
-          onChange={handleFilterChange(setGenre)}
+          onChange={(e) => setGenre(e.target.value)}
           className="border p-2 rounded"
         >
           <option value="">All Genres</option>
@@ -106,10 +94,10 @@ const Books = () => {
 
         <select
           value={available}
-          onChange={handleFilterChange(setAvailable)}
+          onChange={(e) => setAvailable(e.target.value)}
           className="border p-2 rounded"
         >
-          <option value="">All Status</option>
+          <option value="">All</option>
           <option value="true">Available</option>
           <option value="false">Borrowed</option>
         </select>
@@ -117,24 +105,35 @@ const Books = () => {
 
       {/* LIST */}
       {loading ? (
-        <p className="text-center text-gray-500">Loading books...</p>
+        <div className="animate-pulse h-20 bg-gray-200 rounded"></div>
       ) : books.length === 0 ? (
-        <p className="text-center text-gray-500">No books found</p>
+        <p className="text-center text-gray-400">No books found</p>
       ) : (
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4">
           {books.map((b) => (
             <div
               key={b._id}
               onClick={() => navigate(`/book/${b._id}`)}
-              className="bg-white p-5 rounded-xl shadow hover:shadow-lg hover:scale-[1.02] transition cursor-pointer"
+              className="bg-white p-4 rounded-xl shadow-sm border hover:shadow-md transition cursor-pointer"
             >
-              <h3 className="font-bold text-lg">{b.title}</h3>
-              <p className="text-gray-600 text-sm">{b.author}</p>
-              <p className="text-xs mt-2 text-gray-500">{b.genre}</p>
+              <img
+                src={b.image || "https://via.placeholder.com/150"}
+                onError={(e) => {
+                  e.target.src = "https://via.placeholder.com/150";
+                }}
+                className="w-full h-40 object-cover rounded mb-3"
+              />
 
-              <span className={`mt-3 inline-block text-sm font-semibold ${
-                b.status === "Available" ? "text-green-600" : "text-red-600"
-              }`}>
+              <h3 className="font-bold">{b.title}</h3>
+              <p className="text-sm text-gray-500">{b.author}</p>
+
+              <span
+                className={`text-xs font-semibold ${
+                  b.status === "Available"
+                    ? "text-green-600"
+                    : "text-red-500"
+                }`}
+              >
                 {b.status}
               </span>
 
@@ -142,14 +141,14 @@ const Books = () => {
                 <div className="flex gap-2 mt-3">
                   <button
                     onClick={(e) => handleEdit(b._id, e)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs"
+                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
                   >
                     Edit
                   </button>
 
                   <button
                     onClick={(e) => handleDelete(b._id, e)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
+                    className="bg-red-500 text-white px-2 py-1 rounded text-xs"
                   >
                     Delete
                   </button>
@@ -159,27 +158,6 @@ const Books = () => {
           ))}
         </div>
       )}
-
-      {/* PAGINATION */}
-      <div className="flex justify-center gap-4 mt-8">
-        <button
-          onClick={() => setPage((p) => p - 1)}
-          disabled={page === 1}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Prev
-        </button>
-
-        <span>Page {page} of {totalPages}</span>
-
-        <button
-          onClick={() => setPage((p) => p + 1)}
-          disabled={page === totalPages}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
 
     </div>
   );
