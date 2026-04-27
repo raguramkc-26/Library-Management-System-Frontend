@@ -20,16 +20,14 @@ const Login = () => {
   try {
     const res = await loginUser(formData);
 
-    console.log("LOGIN RESPONSE:", res);
-
     const token = res.token || res.data?.token;
     const user = res.user || res.data?.user;
 
     if (!token || !user) {
       throw new Error("Invalid login response");
     }
-
-    login(user, token);
+    localStorage.setItem("token",token);
+    login(user);
 
     toast.success("Login successful");
 
@@ -39,9 +37,7 @@ const Login = () => {
       navigate("/dashboard");
     }
 
-  } catch (error) {
-    console.error("Login Error:", error);
-
+  } catch (err) {
     toast.error(
       error.response?.data?.message || error.message || "Login failed"
     );
