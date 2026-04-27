@@ -58,7 +58,6 @@ const Sidebar = () => {
         {links.map((link) => {
           const Icon = link.icon;
 
-          // 👉 ACTION BUTTON (Notify)
           if (link.action === "notify") {
             return (
               <button
@@ -72,7 +71,6 @@ const Sidebar = () => {
             );
           }
 
-          // 👉 NORMAL LINK
           return (
             <NavLink
               key={link.name}
