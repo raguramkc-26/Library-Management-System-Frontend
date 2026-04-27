@@ -16,45 +16,31 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      return toast.error("Email and password are required");
+  try {
+    const res = await loginUser(formData);
+
+    const { token, user } = res.data;
+
+    if (!token || !user) {
+      throw new Error("Invalid login response");
     }
 
-    try {
-      setLoading(true);
+    login(user, token);
 
-      const res = await loginUser(formData);
+    toast.success("Login successful");
 
-      const { token, user } = res.data;
+    navigate(user.role === "admin" ? "/admin/dashboard" : "/dashboard");
 
-      if (!token || !user) {
-        throw new Error("Invalid login response");
-      }
+  } catch (err) {
+    console.log("Login Error:", err);
 
-      localStorage.setItem("token", token);
-
-      setUser(user);
-
-      toast.success("Login successful");
-
-      if (user.role === "admin") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
-
-    } catch (err) {
-      console.error("Login Error:", err);
-
-      toast.error(
-        err.response?.data?.message || err.message || "Login failed"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    toast.error(
+      err?.response?.data?.message || err.message || "Login failed"
+    );
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
