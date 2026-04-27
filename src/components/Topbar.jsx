@@ -1,8 +1,12 @@
+import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
 const Topbar = () => {
   const { user, logout } = useAuth();
-
+  const handleLogout = () => {
+    logout();
+    Navigate("/login");
+  }
   return (
     <div className="flex justify-between items-center bg-white px-6 py-4 shadow">
       <h1 className="text-lg font-semibold text-gray-700">
