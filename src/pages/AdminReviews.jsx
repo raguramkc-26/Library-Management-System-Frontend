@@ -1,25 +1,40 @@
 import { useEffect, useState } from "react";
 import instance from "../instances/instance";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const AdminReviews = () => {
+  const { user, loading } = useAuth();
+
   const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingReviews, setLoadingReviews] = useState(false);
 
   useEffect(() => {
-    fetchReviews();
-  }, []);
+    // ONLY CALL API AFTER AUTH IS READY
+    if (!loading && user?.role === "admin") {
+      fetchReviews();
+    }
+  }, [user, loading]);
 
   const fetchReviews = async () => {
     try {
-      setLoading(true);
+      setLoadingReviews(true);
+
       const res = await instance.get("/reviews/pending");
+
       setReviews(res.data.data || []);
     } catch (err) {
-      console.log(err);
-      toast.error("Failed to load reviews");
+      console.log("Review fetch error:", err?.response?.data || err.message);
+
+      if (err.response?.status === 403) {
+        toast.error("Access denied (Admin only)");
+      } else if (err.response?.status === 401) {
+        toast.error("Please login again");
+      } else {
+        toast.error("Failed to load reviews");
+      }
     } finally {
-      setLoading(false);
+      setLoadingReviews(false);
     }
   };
 
@@ -28,8 +43,8 @@ const AdminReviews = () => {
       await instance.patch(`/reviews/${id}/approve`);
       toast.success("Review approved");
       fetchReviews();
-    } catch {
-      toast.error("Approve failed");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Approve failed");
     }
   };
 
@@ -38,18 +53,29 @@ const AdminReviews = () => {
       await instance.patch(`/reviews/${id}/reject`);
       toast.success("Review rejected");
       fetchReviews();
-    } catch {
-      toast.error("Reject failed");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Reject failed");
     }
   };
+
+  // AUTH GUARD UI
+  if (loading) return <p className="p-6 text-center">Loading user...</p>;
+
+  if (!user || user.role !== "admin") {
+    return (
+      <p className="p-6 text-center text-red-500 font-medium">
+        Access Denied (Admin only)
+      </p>
+    );
+  }
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
 
       <h1 className="text-2xl font-bold mb-6">Pending Reviews</h1>
 
-      {loading ? (
-        <p>Loading...</p>
+      {loadingReviews ? (
+        <p>Loading reviews...</p>
       ) : reviews.length === 0 ? (
         <p className="text-gray-400 text-center">No pending reviews</p>
       ) : (
@@ -57,7 +83,7 @@ const AdminReviews = () => {
           {reviews.map((r) => (
             <div
               key={r._id}
-              className="bg-white p-4 rounded shadow border"
+              className="bg-white p-4 rounded-xl shadow border hover:shadow-md transition"
             >
               <div className="flex justify-between mb-2">
                 <p className="font-semibold">{r.user?.name}</p>
@@ -75,14 +101,14 @@ const AdminReviews = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => handleApprove(r._id)}
-                  className="bg-green-600 text-white px-3 py-1 rounded"
+                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
                 >
                   Approve
                 </button>
 
                 <button
                   onClick={() => handleReject(r._id)}
-                  className="bg-red-600 text-white px-3 py-1 rounded"
+                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
                 >
                   Reject
                 </button>
@@ -91,7 +117,6 @@ const AdminReviews = () => {
           ))}
         </div>
       )}
-
     </div>
   );
 };
