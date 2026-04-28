@@ -8,7 +8,7 @@ import BookDetails from "./pages/common/BookDetails";
 import Profile from "./pages/user/Profile";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
-import DashboardLayout from "./layouts/DashboardLayout";
+import DashboardLayout from "./layouts/DashboardLayout.jsx";
 import PaymentHistory from "./pages/user/PaymentHistory";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
