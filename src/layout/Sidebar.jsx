@@ -1,37 +1,36 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Home,
-  Book,
+  BookOpen,
   LayoutDashboard,
   User,
   Bell,
   Users,
   PlusCircle,
+  LogOut,
+  Bookmark,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import instance from "../instances/instance";
 import { toast } from "react-toastify";
 
 const Sidebar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const userLinks = [
-    { name: "Home", path: "/dashboard", icon: Home },
-    { name: "Browse Books", path: "/dashboard/books", icon: Book },
-    { name: "My Borrowed Books", path: "/dashboard/borrowed", icon: Book },
+    { name: "Dashboard", path: "/dashboard", icon: Home },
+    { name: "Browse Books", path: "/dashboard/books", icon: BookOpen },
+    { name: "My Borrowed", path: "/dashboard/borrowed", icon: Bookmark },
     { name: "Profile", path: "/dashboard/profile", icon: User },
     { name: "Notifications", path: "/dashboard/notifications", icon: Bell },
   ];
 
   const adminLinks = [
-    { name: "Admin Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Users", path: "/admin/users", icon: Users },
-    { name: "Reviews", path: "/admin/reviews", icon: Book },
-
-    // NEW
+    { name: "Reviews", path: "/admin/reviews", icon: BookOpen },
     { name: "Add Book", path: "/admin/add-book", icon: PlusCircle },
-
-    // ACTION BUTTON
     { name: "Notify All", action: "notify", icon: Bell },
   ];
 
@@ -45,16 +44,34 @@ const Sidebar = () => {
       await instance.post("/admin/notify-all", { message });
       toast.success("Notification sent");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to notify");
+      toast.error(err.response?.data?.message || "Failed");
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
-    <div className="w-64 bg-indigo-600 text-white min-h-screen p-5 flex flex-col">
+    <div className="w-64 bg-indigo-600 text-white min-h-screen flex flex-col">
 
-      <h1 className="text-xl font-bold mb-6">📚 LMS</h1>
+      {/* LOGO */}
+      <div className="p-5 border-b border-indigo-500">
+        <h1 className="text-xl font-bold">📚 LMS</h1>
+        <p className="text-xs text-indigo-200 mt-1">
+          {user?.role === "admin" ? "Admin Panel" : "User Panel"}
+        </p>
+      </div>
 
-      <div className="space-y-2 flex-1">
+      {/* USER INFO */}
+      <div className="px-5 py-4 border-b border-indigo-500">
+        <p className="text-sm">Welcome</p>
+        <p className="font-semibold truncate">{user?.name}</p>
+      </div>
+
+      {/* NAV LINKS */}
+      <div className="flex-1 px-3 py-4 space-y-1">
 
         {links.map((link) => {
           const Icon = link.icon;
@@ -64,7 +81,7 @@ const Sidebar = () => {
               <button
                 key={link.name}
                 onClick={handleNotify}
-                className="w-full flex items-center gap-3 p-3 rounded hover:bg-indigo-500"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-indigo-500 transition"
               >
                 <Icon size={18} />
                 {link.name}
@@ -77,9 +94,9 @@ const Sidebar = () => {
               key={link.name}
               to={link.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 p-3 rounded transition ${
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
                   isActive
-                    ? "bg-white text-indigo-600 font-semibold"
+                    ? "bg-white text-indigo-600 font-semibold shadow"
                     : "hover:bg-indigo-500"
                 }`
               }
@@ -89,7 +106,17 @@ const Sidebar = () => {
             </NavLink>
           );
         })}
+      </div>
 
+      {/* LOGOUT */}
+      <div className="p-4 border-t border-indigo-500">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition"
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
       </div>
 
     </div>
