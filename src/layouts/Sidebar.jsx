@@ -20,8 +20,8 @@ const Sidebar = () => {
 
   const userLinks = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
-    { name: "Browse Books", path: "/dashboard/books", icon: Book },
-    { name: "My Borrowed Books", path: "/dashboard/borrowed", icon: Book },
+    { name: "Browse Books", path: "/dashboard/books", icon: Bookmark },
+    { name: "My Borrowed Books", path: "/dashboard/borrowed", icon: BookOpen },
     { name: "Profile", path: "/dashboard/profile", icon: User },
     { name: "Notifications", path: "/dashboard/notifications", icon: Bell },
   ];
@@ -111,8 +111,8 @@ const Sidebar = () => {
       {/* LOGOUT */}
       <div className="mt-auto">
         <button
-          onClick={logout}
-          className="w-full text-left p-3 rounded hover:bg-gravy-100 text-red-500"
+          onClick={handlelogout}
+          className="w-full text-left p-3 rounded hover:bg-gray-100 text-red-500"
         >
           Logout
         </button>
