@@ -20,8 +20,8 @@ const Sidebar = () => {
 
   const userLinks = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
-    { name: "Browse Books", path: "/dashboard/books", icon: BookOpen },
-    { name: "My Borrowed", path: "/dashboard/borrowed", icon: Bookmark },
+    { name: "Browse Books", path: "/dashboard/books", icon: Book },
+    { name: "My Borrowed Books", path: "/dashboard/borrowed", icon: Book },
     { name: "Profile", path: "/dashboard/profile", icon: User },
     { name: "Notifications", path: "/dashboard/notifications", icon: Bell },
   ];
@@ -54,7 +54,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 bg-indigo-600 text-white min-h-screen flex flex-col">
+    <div className="w-64 bg-white border-r p-5 flex flex-col">
 
       {/* LOGO */}
       <div className="p-5 border-b border-indigo-500">
@@ -109,12 +109,11 @@ const Sidebar = () => {
       </div>
 
       {/* LOGOUT */}
-      <div className="p-4 border-t border-indigo-500">
+      <div className="mt-auto">
         <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition"
+          onClick={logout}
+          className="w-full text-left p-3 rounded hover:bg-gravy-100 text-red-500"
         >
-          <LogOut size={18} />
           Logout
         </button>
       </div>

@@ -1,7 +1,9 @@
-const Card = ({ children }) => (
-  <div className="bg-white rounded-xl shadow border">
-    {children}
-  </div>
-);
+const Card = ({ children, className = "" }) => {
+  return (
+    <div className={`bg-white rounded-xl shadow-sm border p-4 ${className}`}>
+      {children}
+    </div>
+  );
+};
 
 export default Card;

@@ -29,17 +29,34 @@ const Books = () => {
     }
   };
 
+  // LOADING STATE
   if (loading) return <Loader />;
 
-  if (books.length === 0)
-    return <EmptyState title="No books found" subtitle="Try adding books" />;
+  // EMPTY STATE
+  if (books.length === 0) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          title="No books found"
+          subtitle="Try adding or searching books"
+        />
+      </div>
+    );
+  }
 
+  // DATA STATE
   return (
     <div className="p-6 grid md:grid-cols-3 gap-6">
       {books.map((b) => (
-        <Card key={b._id} className="cursor-pointer hover:shadow-lg transition">
+        <Card
+          key={b._id}
+          className="cursor-pointer hover:shadow-lg transition"
+        >
           <img
             src={b.image || "https://via.placeholder.com/150"}
+            onError={(e) =>
+              (e.target.src = "https://via.placeholder.com/150")
+            }
             className="w-full h-44 object-cover rounded"
           />
 
