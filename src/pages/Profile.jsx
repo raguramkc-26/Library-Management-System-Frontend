@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 
 const Profile = () => {
-  const { user, setUser } = useAuth(); // MUST exist in context
+  const { user, setUser } = useAuth(); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
