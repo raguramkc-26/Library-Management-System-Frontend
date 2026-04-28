@@ -16,7 +16,6 @@ const months = [
 
 const AdminChart = ({ data }) => {
 
-  // ✅ SAFE FORMAT (handles missing months)
   const formatted = months.map((month, index) => {
     const item = data?.find((d) => d._id === index + 1);
 
