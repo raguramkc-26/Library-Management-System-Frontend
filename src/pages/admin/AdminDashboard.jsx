@@ -3,7 +3,7 @@ import instance from "../../instances/instance";
 import Card from "../../components/ui/Card";
 import Loader from "../../components/ui/Loader";
 import { toast } from "react-toastify";
-import AdminChart from "./AdminChart";
+import AdminChart from "../../components/charts/AdminChart";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({});
