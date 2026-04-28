@@ -4,7 +4,7 @@ import { getMe } from "../services/authServices";
 import instance from "../instances/instance";
 import { toast } from "react-toastify";
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [borrowings, setBorrowings] = useState([]);
   const [loading, setLoading] = useState(true);
 
