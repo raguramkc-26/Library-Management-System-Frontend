@@ -11,77 +11,118 @@ const Books = () => {
   const navigate = useNavigate();
 
   const [books, setBooks] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [page, setPage] = useState(1);
+  const perPage = 6;
 
   useEffect(() => {
     fetchBooks();
   }, []);
 
+  useEffect(() => {
+    const result = books.filter((b) =>
+      b.title.toLowerCase().includes(search.toLowerCase())
+    );
+    setFiltered(result);
+    setPage(1);
+  }, [search, books]);
+
   const fetchBooks = async () => {
     try {
       setLoading(true);
       const res = await instance.get("/books");
-      setBooks(res?.data?.books || []);
-    } catch (err) {
+      const data = res?.data?.books || res?.data || [];
+      setBooks(data);
+      setFiltered(data);
+    } catch {
       toast.error("Failed to load books");
     } finally {
       setLoading(false);
     }
   };
 
-  // LOADING STATE
   if (loading) return <Loader />;
 
-  // EMPTY STATE
-  if (books.length === 0) {
+  if (filtered.length === 0) {
     return (
       <div className="p-6">
-        <EmptyState
-          title="No books found"
-          subtitle="Try adding or searching books"
-        />
+        <EmptyState title="No books found" subtitle="Try another search" />
       </div>
     );
   }
 
-  // DATA STATE
+  const paginated = filtered.slice(
+    (page - 1) * perPage,
+    page * perPage
+  );
+
   return (
-    <div className="p-6 grid md:grid-cols-3 gap-6">
-      {books.map((b) => (
-        <Card
-          key={b._id}
-          className="cursor-pointer hover:shadow-lg transition"
-        >
-          <img
-            src={b.image || "https://via.placeholder.com/150"}
-            onError={(e) =>
-              (e.target.src = "https://via.placeholder.com/150")
-            }
-            className="w-full h-44 object-cover rounded"
-          />
+    <div className="p-6 space-y-6">
 
-          <div className="mt-3 space-y-1">
-            <h2 className="font-semibold text-lg">{b.title}</h2>
-            <p className="text-sm text-gray-500">{b.author}</p>
+      {/* SEARCH */}
+      <input
+        type="text"
+        placeholder="Search books..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full border p-2 rounded"
+      />
 
-            <span
-              className={`text-xs font-semibold ${
+      {/* GRID */}
+      <div className="grid md:grid-cols-3 gap-6">
+        {paginated.map((b) => (
+          <Card key={b._id} className="hover:shadow-lg transition">
+
+            <img
+              src={b.image || "https://via.placeholder.com/150"}
+              className="w-full h-44 object-cover rounded"
+            />
+
+            <div className="mt-3">
+              <h2 className="font-semibold">{b.title}</h2>
+              <p className="text-sm text-gray-500">{b.author}</p>
+
+              <span className={`text-xs font-bold px-2 py-1 rounded ${
                 b.status === "Available"
-                  ? "text-green-600"
-                  : "text-red-500"
-              }`}
-            >
-              {b.status}
-            </span>
-          </div>
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}>
+                {b.status}
+              </span>
+            </div>
 
-          <div className="mt-3">
-            <Button onClick={() => navigate(`/book/${b._id}`)}>
-              View Details
-            </Button>
-          </div>
-        </Card>
-      ))}
+            <div className="mt-3">
+              <Button onClick={() => navigate(`/book/${b._id}`)}>
+                View Details
+              </Button>
+            </div>
+
+          </Card>
+        ))}
+      </div>
+
+      {/* PAGINATION */}
+      <div className="flex justify-center gap-2">
+        <button
+          onClick={() => setPage((p) => p - 1)}
+          disabled={page === 1}
+        >
+          Prev
+        </button>
+
+        <span>Page {page}</span>
+
+        <button
+          onClick={() => setPage((p) => p + 1)}
+          disabled={page * perPage >= filtered.length}
+        >
+          Next
+        </button>
+      </div>
+
     </div>
   );
 };
