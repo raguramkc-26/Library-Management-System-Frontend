@@ -11,7 +11,8 @@ const BookDetails = () => {
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [borrowing, setBorrowing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -19,89 +20,114 @@ const BookDetails = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
+
       const [bookRes, reviewRes] = await Promise.all([
         instance.get(`/books/${id}`),
         instance.get(`/reviews/${id}`),
       ]);
 
-      setBook(bookRes.data);
-      setReviews(reviewRes.data.data || []);
-    } catch {
+      setBook(bookRes?.data);
+      setReviews(reviewRes?.data?.data || []);
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to load book");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // BORROW
   const handleBorrow = async () => {
+    if (!user) return toast.error("Login required");
+
     try {
-      setBorrowing(true);
-      await instance.post(`/borrow/${id}`);
+      setActionLoading(true);
+
+      await instance.post(`/borrow`, { bookId: id }); // FIXED
+
       toast.success("Book borrowed");
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Borrow failed");
+      console.error(err);
+      toast.error(err?.response?.data?.message || "Borrow failed");
     } finally {
-      setBorrowing(false);
+      setActionLoading(false);
     }
   };
 
+  // RESERVE
   const handleReserve = async () => {
     try {
-      await instance.post(`/reservation/${id}`);
+      setActionLoading(true);
+
+      await instance.post(`/reservation`, { bookId: id });
+
       toast.success("Book reserved");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Reserve failed");
+      toast.error(err?.response?.data?.message || "Reserve failed");
+    } finally {
+      setActionLoading(false);
     }
   };
 
+  // REVIEW
   const handleReview = async () => {
+    if (!user) return toast.error("Login required");
     if (!rating) return toast.error("Select rating");
     if (!comment.trim()) return toast.error("Write comment");
 
     try {
-      await instance.post(`/reviews/${id}`, { rating, comment });
+      setActionLoading(true);
 
-      toast.success("Review submitted (waiting for approval)");
+      await instance.post(`/reviews`, {
+        bookId: id,
+        rating,
+        comment,
+      });
+
+      toast.success("Review submitted");
       setRating(0);
       setComment("");
-      fetchData(); 
-
+      fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Review failed");
+      toast.error(err?.response?.data?.message || "Review failed");
+    } finally {
+      setActionLoading(false);
     }
   };
 
+  if (loading) {
+    return <p className="p-10 text-center">Loading...</p>;
+  }
+
   if (!book) {
-    return (
-      <div className="p-10 text-center text-gray-500">
-        Loading book details...
-      </div>
-    );
+    return <p className="p-10 text-center text-gray-500">Book not found</p>;
   }
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
 
-      {/* BOOK */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border grid md:grid-cols-3 gap-6">
+      {/* BOOK CARD */}
+      <div className="bg-white p-6 rounded-xl shadow grid md:grid-cols-3 gap-6">
 
-        {/* IMAGE */}
         <img
           src={book.image || "https://via.placeholder.com/150"}
-          alt={book.title}
           onError={(e) => (e.target.src = "https://via.placeholder.com/150")}
           className="w-40 h-60 object-cover rounded"
         />
 
-        {/* DETAILS */}
         <div className="md:col-span-2 space-y-3">
 
           <h1 className="text-2xl font-bold">{book.title}</h1>
           <p className="text-gray-500">{book.author}</p>
 
-          <p className="text-sm text-gray-600">Genre: {book.genre}</p>
-          <p className="text-gray-700">{book.description}</p>
+          <p className="text-sm text-gray-600">
+            Genre: {book.genre || "N/A"}
+          </p>
 
-          {/* STATUS */}
+          <p>{book.description}</p>
+
           <p>
             Status:
             <span
@@ -116,29 +142,23 @@ const BookDetails = () => {
           </p>
 
           {/* ACTIONS */}
-          <div className="mt-4 flex gap-3 flex-wrap">
-
-            {user?.role !== "user" && (
-              <p className="text-red-500 text-sm w-full">
-                Only users can borrow books
-              </p>
-            )}
+          <div className="flex gap-3 mt-4 flex-wrap">
 
             {book.status === "Available" ? (
               <button
                 onClick={handleBorrow}
-                disabled={borrowing || user?.role !== "user"}
-                className="bg-green-600 disabled:bg-gray-400 text-white px-5 py-2 rounded"
+                disabled={actionLoading}
+                className="bg-green-600 text-white px-5 py-2 rounded disabled:bg-gray-400"
               >
-                {borrowing ? "Borrowing..." : "Borrow Book"}
+                {actionLoading ? "Processing..." : "Borrow"}
               </button>
             ) : (
               <button
                 onClick={handleReserve}
-                disabled={user?.role !== "user"}
-                className="bg-yellow-500 disabled:bg-gray-400 text-white px-4 py-2 rounded"
+                disabled={actionLoading}
+                className="bg-yellow-500 text-white px-4 py-2 rounded disabled:bg-gray-400"
               >
-                Reserve Book
+                Reserve
               </button>
             )}
 
@@ -148,31 +168,23 @@ const BookDetails = () => {
 
       {/* REVIEW FORM */}
       {user && (
-        <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <h2 className="font-semibold mb-2">Add Review</h2>
+        <div className="bg-white p-5 rounded-xl shadow">
+          <h2 className="font-semibold mb-3">Add Review</h2>
 
-          <p className="text-sm text-gray-500 mb-3">
-            Reviews appear after admin approval
-          </p>
-
-          {/* STAR RATING */}
-          <div className="flex gap-2 mb-3 text-xl">
+          <div className="flex gap-2 text-xl mb-3">
             {[1, 2, 3, 4, 5].map((s) => (
               <button
                 key={s}
                 onClick={() => setRating(s)}
-                className={
-                  s <= rating ? "text-yellow-400" : "text-gray-300"
-                }
+                className={s <= rating ? "text-yellow-400" : "text-gray-300"}
               >
                 ★
               </button>
             ))}
           </div>
 
-          {/* TEXTAREA */}
           <textarea
-            placeholder="Write your review..."
+            placeholder="Write review..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             className="w-full border p-2 mb-3 rounded"
@@ -180,21 +192,20 @@ const BookDetails = () => {
 
           <button
             onClick={handleReview}
+            disabled={actionLoading}
             className="bg-indigo-600 text-white px-4 py-2 rounded"
           >
-            Submit Review
+            Submit
           </button>
         </div>
       )}
 
       {/* REVIEWS */}
-      <div className="bg-white p-5 rounded-xl shadow-sm border">
+      <div className="bg-white p-5 rounded-xl shadow">
         <h2 className="font-semibold mb-3">Reviews</h2>
 
         {reviews.length === 0 ? (
-          <p className="text-gray-400 text-center">
-            No reviews yet
-          </p>
+          <p className="text-gray-400 text-center">No reviews</p>
         ) : (
           reviews.map((r) => (
             <div key={r._id} className="border-b py-3">
@@ -202,7 +213,7 @@ const BookDetails = () => {
               <p className="text-yellow-500">
                 {"★".repeat(r.rating)}
               </p>
-              <p className="text-gray-700">{r.comment}</p>
+              <p>{r.comment}</p>
             </div>
           ))
         )}
