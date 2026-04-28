@@ -5,7 +5,7 @@ import { loginUser } from "../services/authServices";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const { setUser } = useAuth(); 
+  const { login } = useAuth(); 
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -19,9 +19,11 @@ const Login = () => {
   e.preventDefault();
 
   try {
+    setLoading(true);
     const res = await loginUser(formData);
 
-    const { token, user } = res.data;
+    const token = res?.token;
+    const user = res?.user;
 
     if (!token || !user) {
       throw new Error("Invalid login response");
@@ -37,6 +39,8 @@ const Login = () => {
     toast.error(
       err?.response?.data?.message || err.message || "Login failed"
     );
+  } finally {
+    setLoading(false);
   }
 };
 

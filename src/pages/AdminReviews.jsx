@@ -10,7 +10,6 @@ const AdminReviews = () => {
   const [loadingReviews, setLoadingReviews] = useState(false);
 
   useEffect(() => {
-    // ONLY CALL API AFTER AUTH IS READY
     if (!loading && user?.role === "admin") {
       fetchReviews();
     }

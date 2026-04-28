@@ -30,7 +30,7 @@ const AdminChart = ({ data }) => {
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg">
       <h2 className="mb-4 font-semibold text-lg">
-        📈 Monthly Borrow Trends
+        Monthly Borrow Trends
       </h2>
 
       <ResponsiveContainer width="100%" height={300}>

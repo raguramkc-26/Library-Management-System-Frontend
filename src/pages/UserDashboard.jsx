@@ -1,4 +1,3 @@
-// pages/UserDashboard.jsx
 import { useEffect, useState } from "react";
 import instance from "../instances/instance";
 
