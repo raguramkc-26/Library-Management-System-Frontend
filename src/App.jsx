@@ -25,7 +25,7 @@ import EditBook from "./pages/admin/EditBook";
 import BookDetails from "./pages/common/BookDetails";
 
 // LAYOUTS & ROUTES
-import DashboardLayout from "./layouts/DashboardLayout.jsx";
+import DashboardLayout from "./layouts/DashboardLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 

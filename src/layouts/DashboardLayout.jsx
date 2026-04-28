@@ -1,5 +1,5 @@
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
+import Sidebar from "./Sidebar.jsx";
+import Topbar from "./Topbar.jsx";
 import { Outlet } from "react-router-dom";
 
 const DashboardLayout = () => {
