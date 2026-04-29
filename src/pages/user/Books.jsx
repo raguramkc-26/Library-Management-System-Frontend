@@ -105,23 +105,29 @@ const Books = () => {
       </div>
 
       {/* PAGINATION */}
-      <div className="flex justify-center gap-2">
-        <button
-          onClick={() => setPage((p) => p - 1)}
-          disabled={page === 1}
-        >
-          Prev
-        </button>
+      <div className="flex justify-center items-center gap-3 mt-6">
 
-        <span>Page {page}</span>
+  <button
+    onClick={() => setPage((p) => Math.max(p - 1, 1))}
+    disabled={page === 1}
+    className="px-3 py-1 border rounded disabled:opacity-50"
+  >
+    Prev
+  </button>
 
-        <button
-          onClick={() => setPage((p) => p + 1)}
-          disabled={page * perPage >= filtered.length}
-        >
-          Next
-        </button>
-      </div>
+  <span className="text-sm font-medium">
+    Page {page} of {totalPages}
+  </span>
+
+  <button
+    onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+    disabled={page === totalPages}
+    className="px-3 py-1 border rounded disabled:opacity-50"
+  >
+    Next
+  </button>
+
+</div>
 
     </div>
   );
