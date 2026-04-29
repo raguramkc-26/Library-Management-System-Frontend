@@ -32,39 +32,42 @@ const AddBook = () => {
   };
 
   const handleSubmit = async () => {
-    const { title, author, year, isbn } = form;
+  const { title, author, year, isbn, description } = form;
 
-    if (!title || !author || !year || !isbn) {
-      return toast.error("Title, Author, Year & ISBN required");
-    }
+  if (!title || !author || !year || !isbn || !description) {
+    return toast.error("All fields are required");
+  }
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const formData = new FormData();
+    const formData = new FormData();
 
-      Object.entries(form).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
+    formData.append("title", form.title);
+    formData.append("author", form.author);
+    formData.append("genre", form.genre);
+    formData.append("description", form.description);
+    formData.append("year", Number(form.year)); 
+    formData.append("isbn", form.isbn);
 
-      if (image) formData.append("image", image);
+    if (image) formData.append("image", image);
 
-      await instance.post("/books", formData);
+    await instance.post("/books", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-      toast.success("Book added successfully");
-      navigate("/admin/dashboard");
+    toast.success("Book added successfully");
+    navigate("/admin/dashboard");
 
-    } catch (err) {
-      console.error(err);
-
-      toast.error(
-        err?.response?.data?.message || "Server error while adding book"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  } catch (err) {
+    console.error("ADD BOOK ERROR:", err);
+    toast.error(err?.response?.data?.message || "Server error");
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="p-6 max-w-3xl">
       <h1 className="text-2xl font-bold mb-6">Add Book</h1>
