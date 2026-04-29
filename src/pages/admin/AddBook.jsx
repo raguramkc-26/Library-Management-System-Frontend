@@ -73,10 +73,10 @@ const AddBook = () => {
 
         <div className="grid md:grid-cols-2 gap-4">
 
-          <input name="title" placeholder="Title" onChange={handleChange} />
-          <input name="author" placeholder="Author" onChange={handleChange} />
-          <input name="genre" placeholder="Genre" onChange={handleChange} />
-          <input type="number" name="year" placeholder="Year" onChange={handleChange} />
+          <input name="title" placeholder="Title" onChange={handleChange}  className="border p-2 rounded w-full" />
+          <input name="author" placeholder="Author" onChange={handleChange}  className="border p-2 rounded w-full" />
+          <input name="genre" placeholder="Genre" onChange={handleChange}  className="border p-2 rounded w-full" />
+          <input type="number" name="year" placeholder="Year" onChange={handleChange}  className="border p-2 rounded w-full"/>
 
         </div>
 
