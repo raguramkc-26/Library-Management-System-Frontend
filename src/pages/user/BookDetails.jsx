@@ -208,6 +208,13 @@ const BookDetails = () => {
 
   {/* BORROW */}
   {showBorrow && (
+  <>
+    {!user && (
+      <p className="text-sm text-red-500">
+        Please login to borrow or reserve books
+      </p>
+    )}
+
     <Button
       onClick={handleBorrow}
       loading={actionLoading}
@@ -218,13 +225,10 @@ const BookDetails = () => {
           : "bg-green-600 hover:bg-green-700"
       } text-white`}
     >
-      {!user && (
-  <p className="text-sm text-red-500">
-    Please login to borrow or reserve books
-  </p>
-)}
+      {actionLoading ? "Processing..." : "Borrow"}
     </Button>
-  )}
+  </>
+)}
 
   {/* RESERVE */}
   {showReserve && (
