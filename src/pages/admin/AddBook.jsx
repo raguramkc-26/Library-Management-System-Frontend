@@ -98,10 +98,13 @@ const AddBook = () => {
 
         {preview && <img src={preview} className="w-32" />}
 
-        <button onClick={handleSubmit} disabled={loading}>
-          {loading ? "Adding..." : "Add Book"}
-        </button>
-
+        <button
+        onClick={handleSubmit}
+        disabled={loading}
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+        {loading ? "Adding..." : "Add Book"}
+      </button>
       </div>
     </div>
   );
