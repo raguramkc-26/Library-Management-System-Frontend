@@ -13,10 +13,15 @@ import {
 import { useAuth } from "../context/AuthContext";
 import instance from "../instances/instance";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const [showNotify, setShowNotify] = useState(false);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const userLinks = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
@@ -36,15 +41,22 @@ const Sidebar = () => {
 
   const links = user?.role === "admin" ? adminLinks : userLinks;
 
+  // 🔥 Send notification
   const handleNotify = async () => {
-    const message = prompt("Enter notification message");
-    if (!message) return;
+    if (!message.trim()) return toast.error("Message required");
 
     try {
+      setLoading(true);
+
       await instance.post("/admin/notify-all", { message });
+
       toast.success("Notification sent");
+      setMessage("");
+      setShowNotify(false);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,71 +66,107 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 bg-white border-r p-5 flex flex-col">
+    <>
+      <div className="w-64 bg-white border-r flex flex-col">
 
-      {/* LOGO */}
-      <div className="p-5 border-b border-indigo-500">
-        <h1 className="text-xl font-bold">📚 LMS</h1>
-        <p className="text-xs text-indigo-200 mt-1">
-          {user?.role === "admin" ? "Admin Panel" : "User Panel"}
-        </p>
-      </div>
+        {/* LOGO */}
+        <div className="p-5 border-b">
+          <h1 className="text-xl font-bold">📚 LMS</h1>
+          <p className="text-xs text-gray-500 mt-1">
+            {user?.role === "admin" ? "Admin Panel" : "User Panel"}
+          </p>
+        </div>
 
-      {/* USER INFO */}
-      <div className="px-5 py-4 border-b border-indigo-500">
-        <p className="text-sm">Welcome</p>
-        <p className="font-semibold truncate">{user?.name}</p>
-      </div>
+        {/* NAV */}
+        <div className="flex-1 p-3 space-y-1">
 
-      {/* NAV LINKS */}
-      <div className="flex-1 px-3 py-4 space-y-1">
+          {links.map((link) => {
+            const Icon = link.icon;
 
-        {links.map((link) => {
-          const Icon = link.icon;
+            if (link.action === "notify") {
+              return (
+                <button
+                  key={link.name}
+                  onClick={() => setShowNotify(true)}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-indigo-50 text-gray-700"
+                >
+                  <Icon size={18} />
+                  {link.name}
+                </button>
+              );
+            }
 
-          if (link.action === "notify") {
             return (
-              <button
+              <NavLink
                 key={link.name}
-                onClick={handleNotify}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-indigo-500 transition"
+                to={link.path}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                    isActive
+                      ? "bg-indigo-100 text-indigo-600 font-semibold"
+                      : "hover:bg-gray-100"
+                  }`
+                }
               >
                 <Icon size={18} />
                 {link.name}
-              </button>
+              </NavLink>
             );
-          }
+          })}
+        </div>
 
-          return (
-            <NavLink
-              key={link.name}
-              to={link.path}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
-                  isActive
-                    ? "bg-white text-indigo-600 font-semibold shadow"
-                    : "hover:bg-indigo-500"
-                }`
-              }
-            >
-              <Icon size={18} />
-              {link.name}
-            </NavLink>
-          );
-        })}
+        {/* LOGOUT */}
+        <div className="p-3">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-50 text-red-500"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* LOGOUT */}
-      <div className="mt-auto">
-        <button
-          onClick={handleLogout}
-          className="w-full text-left p-3 rounded hover:bg-gray-100 text-red-500"
-        >
-          Logout
-        </button>
-      </div>
+      {/* 🔥 MODAL (Notify UI) */}
+      {showNotify && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
-    </div>
+          <div className="bg-white rounded-xl p-6 w-96 shadow-xl space-y-4">
+
+            <h2 className="text-lg font-semibold">
+              Send Notification
+            </h2>
+
+            <textarea
+              placeholder="Enter message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full border p-3 rounded"
+            />
+
+            <div className="flex justify-end gap-2">
+
+              <button
+                onClick={() => setShowNotify(false)}
+                className="px-4 py-2 border rounded"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleNotify}
+                disabled={loading}
+                className="px-4 py-2 bg-indigo-600 text-white rounded"
+              >
+                {loading ? "Sending..." : "Send"}
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
