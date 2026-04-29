@@ -104,12 +104,6 @@ const Login = () => {
           </button>
         </form>
 
-        <div className="text-center">
-          <Link to="/" className="text-sm text-blue-600">
-            Back to Home
-          </Link>
-        </div>
-
       </div>
     </div>
   );

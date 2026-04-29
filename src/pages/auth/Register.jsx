@@ -141,14 +141,6 @@ const Register = () => {
                         </a>.
                     </p>
                 </div>
-
-                <div
-                    className="mt-6 text-center"
-                >
-                    <Link to="/"
-                        className="text-sm text-blue-600 hover:text-blue-500"
-                    >Back to Home</Link>
-                </div>
             </div>
         </div>
     )
