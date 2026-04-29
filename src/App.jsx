@@ -22,7 +22,7 @@ import AddBook from "./pages/admin/AddBook";
 import EditBook from "./pages/admin/EditBook";
 
 // COMMON
-import BookDetails from "./pages/common/BookDetails";
+import BookDetails from "./pages/user/BookDetails.jsx";
 
 // LAYOUTS & ROUTES
 import DashboardLayout from "./layouts/DashboardLayout.jsx";
