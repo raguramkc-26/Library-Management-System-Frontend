@@ -1,9 +1,17 @@
 import api from "./api";
 
-export const getPendingReviews = () => api.get("/reviews/pending");
+// GET REVIEWS FOR BOOK
+export const getReviews = (bookId) =>
+  api.get(`/reviews/${bookId}`);
 
-export const approveReview = (id) =>
-  api.patch(`/reviews/${id}/approve`);
+// GET AVERAGE RATING
+export const getAverageRating = (bookId) =>
+  api.get(`/reviews/${bookId}/average`);
 
-export const rejectReview = (id) =>
-  api.patch(`/reviews/${id}/reject`);
+// ADD REVIEW
+export const addReview = (bookId, data) =>
+  api.post(`/reviews/${bookId}`, data);
+
+// ADMIN - GET PENDING REVIEWS (optional)
+export const getPendingReviews = () =>
+  api.get("/reviews/pending");

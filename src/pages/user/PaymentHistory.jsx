@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getBooks } from "../../services/bookService"; 
+import { getMyBorrowings } from "../../services/bookService";
 import { toast } from "react-toastify";
 import Card from "../../components/ui/Card";
 import Loader from "../../components/ui/Loader";
@@ -8,25 +8,26 @@ import EmptyState from "../../components/ui/EmptyState";
 const PaymentHistory = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const res = await getBooks();
-  setBooks(res.data.data || []);
+
   useEffect(() => {
+    const fetchBorrowed = async () => {
+      try {
+        setLoading(true);
+
+        const res = await getMyBorrowings();
+        setData(res?.data?.data || []);
+
+      } catch {
+        toast.error("Failed to load borrowed books");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchBorrowed();
   }, []);
 
-  const fetchBorrowed = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get("/borrow/me");
-      setData(res?.data?.data || []);
-    } catch (err) {
-      toast.error("Failed to load borrowed books");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if  (loading) return <Loader />;
+  if (loading) return <Loader />;
 
   if (data.length === 0)
     return (

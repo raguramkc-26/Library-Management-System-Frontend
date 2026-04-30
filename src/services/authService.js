@@ -1,21 +1,21 @@
-import api from "./api"
+import api from "./api";
 
-export const registerUser = async (data) => {
-  const res = await api.post("/auth/register", data);
-  return res.data;
-};
+// LOGIN
+export const loginUser = (data) =>
+  api.post("/auth/login", data);
 
-export const loginUser = async (data) => {
-  const res = await api.post("/auth/login", data);
-  return res.data; 
-};
+// REGISTER
+export const registerUser = (data) =>
+  api.post("/auth/register", data);
 
-export const getMe = async () => {
-  const res = await api.get("/auth/me");
-  return res.data;
-};
+// GET CURRENT USER
+export const getMe = () =>
+  api.get("/auth/me");
 
-export const logoutUser = async () => {
-  const res = await api.post("/auth/logout");
-  return res.data;
-};
+// FORGOT PASSWORD
+export const forgotPassword = (email) =>
+  api.post("/auth/forgot-password", { email });
+
+// RESET PASSWORD 
+export const resetPassword = (token, password) =>
+  api.post(`/auth/reset-password/${token}`, { password });
