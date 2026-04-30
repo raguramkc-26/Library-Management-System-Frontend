@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import instance from "../instances/instance";
-import Card from "../components/ui/Card";
-import Loader from "../components/ui/Loader";
-import EmptyState from "../components/ui/EmptyState";
+import instance from "../../instances/instance";
+import Card from "../../components/ui/Card";
+import Loader from "../../components/ui/Loader";
+import EmptyState from "../../components/ui/EmptyState";
 
 const BorrowedBooks = () => {
   const [books, setBooks] = useState([]);
