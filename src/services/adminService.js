@@ -1,9 +1,9 @@
-import instance from "../instances/instance";
+import api from "./api"
 
 // ADMIN STATS
 export const getAdminStats = async () => {
   try {
-    const res = await instance.get("/admin/stats");
+    const res = await api.get("/admin/stats");
 
     if (!res.data) {
       throw new Error("Invalid stats response");
@@ -19,7 +19,7 @@ export const getAdminStats = async () => {
 // MONTHLY STATS
 export const getMonthlyStats = async () => {
   try {
-    const res = await instance.get("/admin/stats/monthly");
+    const res = await api.get("/admin/stats/monthly");
 
     // backend must return array
     if (!Array.isArray(res.data)) {
@@ -41,7 +41,7 @@ export const notifyAll = async (message) => {
       throw new Error("Message cannot be empty");
     }
 
-    const res = await instance.post("/admin/notify-all", { message });
+    const res = await api.post("/admin/notify-all", { message });
 
     return res.data;
   } catch (err) {

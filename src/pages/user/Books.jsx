@@ -38,7 +38,7 @@ const Books = () => {
       console.log("API CALL START");
       setLoading(true);
 
-      const res = await instance.get(
+      const res = await api.get(
         `/books?page=${page}&keyword=${debouncedSearch}`
       );
       console.log("FULL RESPONSE:", res);

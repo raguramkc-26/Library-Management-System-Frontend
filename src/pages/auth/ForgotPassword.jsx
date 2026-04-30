@@ -10,7 +10,7 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     try {
-      await instance.post("/auth/forgot-password", { email });
+      await api.post("/auth/forgot-password", { email });
       toast.success("Reset link sent to email");
     } catch {
       toast.error("Failed to send email");

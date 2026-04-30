@@ -23,10 +23,10 @@ const AdminDashboard = () => {
 
       const [statsRes, recentRes, topRes, monthlyRes] =
         await Promise.all([
-          instance.get("/admin/stats"),
-          instance.get("/admin/recent"),
-          instance.get("/admin/top-books"),
-          instance.get("/admin/stats/monthly"),
+          api.get("/admin/stats"),
+          api.get("/admin/recent"),
+          api.get("/admin/top-books"),
+          api.get("/admin/stats/monthly"),
         ]);
 
       setStats(statsRes?.data?.data || {});

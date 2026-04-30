@@ -17,7 +17,7 @@ const PaymentHistory = () => {
   const fetchBorrowed = async () => {
     try {
       setLoading(true);
-      const res = await instance.get("/borrow/me");
+      const res = await api.get("/borrow/me");
       setData(res?.data?.data || []);
     } catch (err) {
       toast.error("Failed to load borrowed books");

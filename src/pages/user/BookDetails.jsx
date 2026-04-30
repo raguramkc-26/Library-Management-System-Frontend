@@ -36,9 +36,9 @@ const BookDetails = () => {
       setLoading(true);
 
       const [bookRes, reviewRes, avgRes] = await Promise.all([
-        instance.get(`/books/${id}`),
-        instance.get(`/reviews/${id}`),
-        instance.get(`/reviews/${id}/average`)
+        api.get(`/books/${id}`),
+        api.get(`/reviews/${id}`),
+        api.get(`/reviews/${id}/average`)
       ]);
 
       const bookData = bookRes?.data?.data;
@@ -51,7 +51,7 @@ const BookDetails = () => {
       // fetch borrow info
       if (user) {
         try {
-          const borrowRes = await instance.get(`/borrow/me`);
+          const borrowRes = await api.get(`/borrow/me`);
           const borrowData = borrowRes?.data?.data || [];
 
           const record = borrowData.find(
@@ -85,7 +85,7 @@ const BookDetails = () => {
     }
     try {
       setActionLoading(true);
-      await instance.post(`/borrow/${id}`);
+      await api.post(`/borrow/${id}`);
       toast.success("Book borrowed");
       await fetchData();
     } catch (err) {
@@ -101,7 +101,7 @@ const BookDetails = () => {
 
     try {
       setActionLoading(true);
-      await instance.post(`/reservation/${id}`);
+      await api.post(`/reservation/${id}`);
       toast.success("Book reserved");
     } catch (err) {
       console.error("RESERVE ERROR:", err);
@@ -116,7 +116,7 @@ const BookDetails = () => {
 
     try {
       setActionLoading(true);
-      await instance.put(`/borrow/${borrowRecord._id}/return`);
+      await api.put(`/borrow/${borrowRecord._id}/return`);
       toast.success("Book returned");
       await fetchData();
     } catch (err) {
@@ -135,7 +135,7 @@ const BookDetails = () => {
     try {
       setReviewLoading(true);
 
-      await instance.post(`/reviews/${id}`, { rating, comment });
+      await api.post(`/reviews/${id}`, { rating, comment });
 
       toast.success("Review submitted");
 
@@ -144,8 +144,8 @@ const BookDetails = () => {
 
       // refresh reviews + avg rating
       const [reviewRes, avgRes] = await Promise.all([
-        instance.get(`/reviews/${id}`),
-        instance.get(`/reviews/${id}/average`)
+        api.get(`/reviews/${id}`),
+        api.get(`/reviews/${id}/average`)
       ]);
 
       setReviews(reviewRes?.data?.data || []);

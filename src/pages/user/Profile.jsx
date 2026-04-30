@@ -18,7 +18,7 @@ const Profile = () => {
     try {
       setLoading(true);
 
-      const res = await instance.get("/auth/me");
+      const res = await api.get("/auth/me");
       setUser(res?.data?.user);
 
     } catch (err) {

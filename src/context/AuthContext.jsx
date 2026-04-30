@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import instance from "../instances/instance";
+import { getMe } from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        const res = await instance.get("/auth/me");
+        const res = await getMe();
 
         if (!res?.data?.user) {
           throw new Error("Invalid user data");

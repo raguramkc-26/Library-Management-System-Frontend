@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getBooks } from "../../services/bookService"; 
+import {
+  getPendingReviews,
+  approveReview,
+  rejectReview,
+} from "../../services/reviewService";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
@@ -8,8 +12,7 @@ const AdminReviews = () => {
 
   const [reviews, setReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
-  const res = await getBooks();
-  setBooks(res.data.data || []);
+
   useEffect(() => {
     if (!loading && user?.role === "admin") {
       fetchReviews();
@@ -20,11 +23,11 @@ const AdminReviews = () => {
     try {
       setLoadingReviews(true);
 
-      const res = await instance.get("/reviews/pending");
-
+      const res = await getPendingReviews();
       setReviews(res.data.data || []);
+
     } catch (err) {
-      console.log("Review fetch error:", err?.response?.data || err.message);
+      console.error("Review fetch error:", err);
 
       if (err.response?.status === 403) {
         toast.error("Access denied (Admin only)");
@@ -33,6 +36,7 @@ const AdminReviews = () => {
       } else {
         toast.error("Failed to load reviews");
       }
+
     } finally {
       setLoadingReviews(false);
     }
@@ -40,7 +44,7 @@ const AdminReviews = () => {
 
   const handleApprove = async (id) => {
     try {
-      await instance.patch(`/reviews/${id}/approve`);
+      await approveReview(id);
       toast.success("Review approved");
       fetchReviews();
     } catch (err) {
@@ -50,7 +54,7 @@ const AdminReviews = () => {
 
   const handleReject = async (id) => {
     try {
-      await instance.patch(`/reviews/${id}/reject`);
+      await rejectReview(id);
       toast.success("Review rejected");
       fetchReviews();
     } catch (err) {
@@ -58,8 +62,10 @@ const AdminReviews = () => {
     }
   };
 
-  // AUTH GUARD UI
-  if (loading) return <p className="p-6 text-center">Loading user...</p>;
+  // AUTH GUARD
+  if (loading) {
+    return <p className="p-6 text-center">Loading user...</p>;
+  }
 
   if (!user || user.role !== "admin") {
     return (
@@ -72,12 +78,16 @@ const AdminReviews = () => {
   return (
     <div className="p-6 max-w-5xl mx-auto">
 
-      <h1 className="text-2xl font-bold mb-6">Pending Reviews</h1>
+      <h1 className="text-2xl font-bold mb-6">
+        Pending Reviews
+      </h1>
 
       {loadingReviews ? (
-        <p>Loading reviews...</p>
+        <p className="text-center">Loading reviews...</p>
       ) : reviews.length === 0 ? (
-        <p className="text-gray-400 text-center">No pending reviews</p>
+        <p className="text-gray-400 text-center">
+          No pending reviews
+        </p>
       ) : (
         <div className="space-y-4">
           {reviews.map((r) => (
@@ -86,13 +96,18 @@ const AdminReviews = () => {
               className="bg-white p-4 rounded-xl shadow border hover:shadow-md transition"
             >
               <div className="flex justify-between mb-2">
-                <p className="font-semibold">{r.user?.name}</p>
+                <p className="font-semibold">
+                  {r.user?.name}
+                </p>
+
                 <span className="text-yellow-500">
                   {"★".repeat(r.rating)}
                 </span>
               </div>
 
-              <p className="text-gray-700 mb-2">{r.comment}</p>
+              <p className="text-gray-700 mb-2">
+                {r.comment}
+              </p>
 
               <p className="text-sm text-gray-500 mb-3">
                 Book: {r.book?.title}
@@ -117,6 +132,7 @@ const AdminReviews = () => {
           ))}
         </div>
       )}
+
     </div>
   );
 };

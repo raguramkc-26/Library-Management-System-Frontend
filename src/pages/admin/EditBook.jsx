@@ -31,7 +31,7 @@ const EditBook = () => {
 
   const handleUpdate = async () => {
     try {
-      await instance.put(`/books/${id}`, form);
+      await api.put(`/books/${id}`, form);
       toast.success("Updated successfully");
       navigate("/admin/dashboard");
     } catch {

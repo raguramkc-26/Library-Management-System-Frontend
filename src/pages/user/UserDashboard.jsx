@@ -22,7 +22,7 @@ const UserDashboard = () => {
     try {
       setLoading(true);
 
-      const res = await instance.get("/borrow/me");
+      const res = await api.get("/borrow/me");
       const data = res?.data?.data || [];
 
       setBooks(data);

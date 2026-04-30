@@ -13,7 +13,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     try {
-      await instance.post(`/auth/reset-password/${token}`, { password });
+      await api.post(`/auth/reset-password/${token}`, { password });
       toast.success("Password updated");
       navigate("/login");
     } catch {

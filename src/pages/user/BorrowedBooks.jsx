@@ -15,7 +15,7 @@ const BorrowedBooks = () => {
 
   const fetchBorrowed = async () => {
     try {
-      const res = await instance.get("/borrow/me");
+      const res = await api.get("/borrow/me");
       setBooks(res?.data?.data || []);
     } catch (err) {
       console.error("Borrow fetch failed", err);

@@ -11,7 +11,7 @@ import {
   Bookmark,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import instance from "../instances/instance";
+import { getMe } from "../services/authService";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { sendNotification } from "../services/notificationService";
@@ -48,7 +48,7 @@ const Sidebar = () => {
 
     try {
       setLoading(true);
-      await instance.post("/admin/notify-all", { message });
+      await sendNotification( { message } );
 
       toast.success("Notification sent");
       setMessage("");

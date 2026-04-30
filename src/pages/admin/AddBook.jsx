@@ -34,7 +34,7 @@ const AddBook = () => {
       Object.keys(form).forEach((key) => data.append(key, form[key]));
       if (image) data.append("image", image);
 
-      await instance.post("/books", data);
+      await api.post("/books", data);
 
       toast.success("Book added successfully");
 

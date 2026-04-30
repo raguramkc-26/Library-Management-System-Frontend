@@ -1,19 +1,19 @@
-import instance from "../instances/instance";
+import { getMe } from "../services/authService";
 import { getBookById } from "./bookService";
 //Public
 export const getAllBooks = async (params) => {
     try {
-        const res = await instance.get('/books', { params });
+        const res = await api.get('/books', { params });
         return res.data;
     } catch (err) {
         console.error("getAllBooks error:", err);
         throw err;
     }
-};
+}
 //Admin
 export const createBook = async (bookData) => {
     try {
-        const res = await instance.post('/books', bookData);
+        const res = await api.post('/books', bookData);
         return res.data;
     } catch (err) {
         console.error("createBook error:", err);
@@ -23,7 +23,7 @@ export const createBook = async (bookData) => {
 
 export const updateSingleBook = async (id, bookData) => {
     try {
-        const res = await instance.put(`/books/${id}`, bookData);
+        const res = await api.put(`/books/${id}`, bookData);
         return res.data;
     } catch (err) {
         console.error("updateSingleBook error:", err);
@@ -33,7 +33,7 @@ export const updateSingleBook = async (id, bookData) => {
 
 export const deleteBook = async (id) => {
     try {
-        const res = await instance.delete(`/books/${id}`);
+        const res = await api.delete(`/books/${id}`);
         return res.data;
     } catch (err) {
         console.error("deleteBook error:", err);
@@ -53,7 +53,7 @@ export const getSingleBook = async (id) => {
 
 export const handleBorrow = async (id) => {
   try {
-    await instance.post(`/borrow/${id}`);
+    await api.post(`/borrow/${id}`);
     alert("Book borrowed successfully");
     window.location.reload();
   } catch (err) {
@@ -63,7 +63,7 @@ export const handleBorrow = async (id) => {
 
 export const getMyBorrowings = async () => {
     try {
-        const res = await instance.get('/borrow/me');
+        const res = await api.get('/borrow/me');
         return res.data;
     } catch (err) {
         console.error("getMyBorrowings error:", err);

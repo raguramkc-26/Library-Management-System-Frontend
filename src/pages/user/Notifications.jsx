@@ -16,7 +16,7 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await instance.get("/notifications");
+      const res = await api.get("/notifications");
       setNotifications(res?.data?.data || []);
     } catch (err) {
       console.error("Notification fetch failed", err);
