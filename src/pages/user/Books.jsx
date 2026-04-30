@@ -44,7 +44,7 @@ const Books = () => {
 
     } catch (err) {
       console.error(err);
-      toast.error("Failed to load books");
+      toast.error("Failed to load books"); 
     } finally {
       setLoading(false);
     }
