@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import instance from "../../instances/instance";
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
+import { getUsers } from "../../services/adminService";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    instance.get("/users").then((res) => {
+    getUsers().then((res) => {
       setUsers(res.data.data || []);
     });
   }, []);
