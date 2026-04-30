@@ -1,72 +1,31 @@
-import { getMe } from "../services/authService";
-import { getBookById } from "./bookService";
-//Public
-export const getAllBooks = async (params) => {
-    try {
-        const res = await api.get('/books', { params });
-        return res.data;
-    } catch (err) {
-        console.error("getAllBooks error:", err);
-        throw err;
-    }
-}
-//Admin
-export const createBook = async (bookData) => {
-    try {
-        const res = await api.post('/books', bookData);
-        return res.data;
-    } catch (err) {
-        console.error("createBook error:", err);
-        throw err;
-    }
-};
+import api from "./api";
 
-export const updateSingleBook = async (id, bookData) => {
-    try {
-        const res = await api.put(`/books/${id}`, bookData);
-        return res.data;
-    } catch (err) {
-        console.error("updateSingleBook error:", err);
-        throw err;
-    }
-};
+// PUBLIC
+export const getAllBooks = (params) =>
+  api.get("/books", { params });
 
-export const deleteBook = async (id) => {
-    try {
-        const res = await api.delete(`/books/${id}`);
-        return res.data;
-    } catch (err) {
-        console.error("deleteBook error:", err);
-        throw err;
-    }
-};
+export const getBookById = (id) =>
+  api.get(`/books/${id}`);
 
-export const getSingleBook = async (id) => {
-    try {
-        const res = await getBookById(id);
-        return res.data;
-    } catch (err) {
-        console.error("getSingleBook error:", err);
-        throw err;
-    }
-};
+// ADMIN
+export const createBook = (data) =>
+  api.post("/books", data);
 
-export const handleBorrow = async (id) => {
-  try {
-    await api.post(`/borrow/${id}`);
-    alert("Book borrowed successfully");
-    window.location.reload();
-  } catch (err) {
-    alert(err.response?.data?.message || "Error");
-  }
-};
+export const updateSingleBook = (id, data) =>
+  api.put(`/books/${id}`, data);
 
-export const getMyBorrowings = async () => {
-    try {
-        const res = await api.get('/borrow/me');
-        return res.data;
-    } catch (err) {
-        console.error("getMyBorrowings error:", err);
-        throw err;
-    }
-};
+export const deleteBook = (id) =>
+  api.delete(`/books/${id}`);
+
+// BORROW SYSTEM
+export const borrowBook = (id) =>
+  api.post(`/borrow/${id}`);
+
+export const returnBook = (id) =>
+  api.put(`/borrow/${id}/return`);
+
+export const reserveBook = (id) =>
+  api.post(`/reservation/${id}`);
+
+export const getMyBorrowings = () =>
+  api.get("/borrow/me");

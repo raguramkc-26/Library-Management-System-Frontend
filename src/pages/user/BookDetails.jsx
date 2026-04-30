@@ -53,15 +53,18 @@ const BookDetails = () => {
       ]);
 
       const bookData = bookRes?.data?.data;
+
       setBook(bookData);
       setReviews(reviewRes?.data?.data || []);
       setAvgRating(avgRes?.data?.data?.avgRating || 0);
 
       if (user) {
         const borrowRes = await getMyBorrowings();
+
         const record = (borrowRes?.data?.data || []).find(
           (b) => b.book?._id === id && b.status === "borrowed"
         );
+
         setBorrowRecord(record || null);
       }
 
@@ -164,7 +167,6 @@ const BookDetails = () => {
 
       <Card>
         <h1 className="text-2xl font-bold">{book.title}</h1>
-
         <p className="text-gray-500">{book.author}</p>
 
         <p className="text-yellow-500">
@@ -194,7 +196,7 @@ const BookDetails = () => {
         </div>
       </Card>
 
-      {/* Review UI unchanged */}
+      {/* Review Section stays same */}
 
     </div>
   );
