@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const res = await getBooks();
-
+  setBooks(res.data.data || []);
   const handleSubmit = async (e) => {
     e.preventDefault();
 

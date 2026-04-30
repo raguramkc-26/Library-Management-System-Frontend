@@ -25,7 +25,7 @@ const BookDetails = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [reviewLoading, setReviewLoading] = useState(false);
   const res = await getBooks();
-
+  setBooks(res.data.data || []);
   useEffect(() => {
     fetchData();
   }, [id, user]);
@@ -80,7 +80,8 @@ const BookDetails = () => {
   const handleBorrow = async () => {
     if (!user) return toast.error("Login required");
     if (book.status !== "Available") {
-      return toast.error("Book not available");
+      toast.error("Book not available");
+      return;
     }
     try {
       setActionLoading(true);

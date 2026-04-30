@@ -8,7 +8,7 @@ const BorrowedBooks = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const res = await getBooks();
-
+  setBooks(res.data.data || []);
   useEffect(() => {
     fetchBorrowed();
   }, []);

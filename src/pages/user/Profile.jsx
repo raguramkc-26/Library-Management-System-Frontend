@@ -9,6 +9,7 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const res = await getBooks();
+  setBooks(res.data.data || []);
   useEffect(() => {
     fetchProfile();
   }, []);

@@ -9,7 +9,7 @@ const AdminReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
   const res = await getBooks();
-
+  setBooks(res.data.data || []);
   useEffect(() => {
     if (!loading && user?.role === "admin") {
       fetchReviews();

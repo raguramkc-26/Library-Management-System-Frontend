@@ -8,7 +8,7 @@ const EditBook = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const res = await getBooks();
-
+  setBooks(res.data.data || []);
   const [form, setForm] = useState({
     title: "",
     author: "",

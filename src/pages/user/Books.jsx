@@ -16,7 +16,7 @@ const Books = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const res = await getBooks();
-
+  setBooks(res.data.data || []);
   // Debounce search 
   useEffect(() => {
     const timer = setTimeout(() => {

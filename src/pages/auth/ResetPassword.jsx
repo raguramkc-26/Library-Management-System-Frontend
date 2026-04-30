@@ -8,7 +8,7 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState(""); 
   const res = await getBooks();
-
+  setBooks(res.data.data || []);
   const handleSubmit = async (e) => {
     e.preventDefault();
 

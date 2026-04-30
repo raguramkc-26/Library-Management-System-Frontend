@@ -7,7 +7,7 @@ import { getUsers } from "../../services/adminService";
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
 const res = await getBooks();
-
+setBooks(res.data.data || []);
   useEffect(() => {
     getUsers().then((res) => {
       setUsers(res.data.data || []);

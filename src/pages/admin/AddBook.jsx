@@ -16,6 +16,7 @@ const AddBook = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const res = await getBooks();
+  setBooks(res.data.data || []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

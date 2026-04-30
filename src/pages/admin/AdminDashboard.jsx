@@ -12,7 +12,7 @@ const AdminDashboard = () => {
   const [monthly, setMonthly] = useState([]);
   const [loading, setLoading] = useState(true);
   const res = await getBooks();
-
+  setTopBooks(res.data.data || []);
   useEffect(() => {
     fetchDashboard();
   }, []);
