@@ -1,4 +1,4 @@
-import DashboardLayout from "../../layouts/DashboardLayout";
+import DashboardLayout from "../../layout/DashboardLayout";
 import { useEffect, useState } from "react";
 import { getMyBorrowings } from "../../services/bookService";
 import { toast } from "react-toastify";

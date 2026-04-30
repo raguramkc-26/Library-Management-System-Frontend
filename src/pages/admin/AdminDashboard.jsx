@@ -3,7 +3,7 @@ import { getAdminStats, getMonthlyStats } from "../../services/adminService";
 import Loader from "../../components/ui/Loader";
 import Card from "../../components/ui/Card";
 import AdminChart from "../../components/charts/AdminChart";
-import DashboardLayout from "../../layouts/DashboardLayout";
+import DashboardLayout from "../../layout/DashboardLayout";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({});

@@ -14,18 +14,25 @@ const Login = () => {
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const res = await loginUser(form);
-      login(res.user, res.token);
+  try {
+    const res = await loginUser(form);
 
-      toast.success("Login successful");
+    login(res.user, res.token);
+
+    toast.success("Login successful");
+
+    if (res.user.role === "admin") {
+      navigate("/admin/dashboard");
+    } else {
       navigate("/dashboard");
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Login failed");
     }
-  };
+
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Login failed");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
