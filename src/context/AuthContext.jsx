@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         const res = await getMe();
-
+        setUser(res.user);
         if (!res?.data?.user) {
           throw new Error("Invalid user data");
         }
