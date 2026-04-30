@@ -144,7 +144,7 @@ const BookDetails = () => {
 
   // ================= STATES =================
 
-  {loading && <Loader />}
+  if  (loading) return <Loader />;
 
   if (!book)
     return <EmptyState title="Book not found" subtitle="Try another book" />;

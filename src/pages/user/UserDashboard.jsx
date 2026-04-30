@@ -45,7 +45,7 @@ const UserDashboard = () => {
     }
   };
 
-  {loading && <Loader />}
+  if  (loading) return <Loader />;
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen space-y-6">

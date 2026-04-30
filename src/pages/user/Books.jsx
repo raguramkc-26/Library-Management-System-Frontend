@@ -55,8 +55,9 @@ const Books = () => {
 
   // UI
 
-  {loading && <Loader />}
+  if  (loading) return <Loader />;
   console.log("BOOKS STATE:", books);
+  console.log("RENDER CHECK:", books.length); 
 
   return (
   <div className="p-6 space-y-6">
