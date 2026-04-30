@@ -56,6 +56,13 @@ const Books = () => {
   // UI
 
   if  (loading) return <Loader />;
+  if (!books.length)
+    return (
+     <EmptyState
+     title="No books found"
+     subtitle="Try another search"
+     />
+  );
   console.log("BOOKS STATE:", books);
   console.log("RENDER CHECK:", books.length); 
 
