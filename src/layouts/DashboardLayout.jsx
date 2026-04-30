@@ -1,5 +1,5 @@
-import Sidebar from "../components/layout/Sidebar";
-import Topbar from "../components/layout/Topbar";
+import Sidebar from "../components/layouts/Sidebar";
+import Topbar from "../components /layouts/Topbar";
 
 const DashboardLayout = ({ children }) => {
   return (
