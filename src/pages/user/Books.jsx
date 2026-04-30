@@ -56,6 +56,7 @@ const Books = () => {
   // UI
 
   {loading && <Loader />}
+  console.log("BOOKS STATE:", books);
 
   return (
   <div className="p-6 space-y-6">
