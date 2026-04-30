@@ -41,7 +41,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  {loading && <Loader />}
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen space-y-6">

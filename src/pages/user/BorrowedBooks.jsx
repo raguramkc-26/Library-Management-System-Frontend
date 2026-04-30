@@ -14,7 +14,7 @@ const BorrowedBooks = () => {
     });
   }, []);
 
-  if (loading) return <Loader />;
+  {loading && <Loader />}
 
   return (
     <div className="space-y-4">

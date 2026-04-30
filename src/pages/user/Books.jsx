@@ -55,96 +55,93 @@ const Books = () => {
 
   // UI
 
-  if (loading) return <Loader />;
+  {loading && <Loader />}
 
   return (
-    <div className="p-6 space-y-6">
+  <div className="p-6 space-y-6">
 
-      {/* SEARCH */}
-      <input
-        type="text"
-        placeholder="Search books..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-      />
+    {/* SEARCH */}
+    <input
+      type="text"
+      placeholder="Search books..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+    />
 
-      {/* BOOK GRID */}
-      {books.length === 0 ? (
-        <EmptyState title="No books found" subtitle="Try another search" />
-      ) : (
-        <div className="grid md:grid-cols-3 gap-6">
-          {books.map((b) => (
-            <Card
-              key={b._id}
-              className="hover:shadow-xl transition-all duration-300 cursor-pointer"
-            >
-              <img
-                src={b.image || "https://via.placeholder.com/150"}
-                onError={(e) =>
-                  (e.target.src = "https://via.placeholder.com/150")
-                }
-                className="w-full h-44 object-cover rounded"
-              />
+    {/* LOADING */}
+    {loading ? (
+      <Loader />
+    ) : books.length === 0 ? (
+      <EmptyState title="No books found" subtitle="Try another search" />
+    ) : (
+      <div className="grid md:grid-cols-3 gap-6">
+        {books.map((b) => (
+          <Card key={b._id}>
+            <img
+              src={b.image || "https://via.placeholder.com/150"}
+              onError={(e) =>
+                (e.target.src = "https://via.placeholder.com/150")
+              }
+              className="w-full h-44 object-cover rounded"
+            />
 
-              <div className="mt-3 space-y-1">
-                <h2 className="font-semibold text-lg">{b.title}</h2>
-                <p className="text-sm text-gray-500">{b.author}</p>
+            <div className="mt-3 space-y-1">
+              <h2 className="font-semibold text-lg">{b.title}</h2>
+              <p className="text-sm text-gray-500">{b.author}</p>
 
-                <span
-                  className={`text-xs font-semibold px-2 py-1 rounded ${
-                    b.status === "Available"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {b.status}
-                </span>
-              </div>
+              <span
+                className={`text-xs font-semibold px-2 py-1 rounded ${
+                  b.status === "Available"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {b.status}
+              </span>
+            </div>
 
-              <div className="mt-4">
-                <Button
-                  onClick={() => navigate(`/book/${b._id}`)}
-                  className="w-full"
-                >
-                  View Details
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
+            <div className="mt-4">
+              <Button
+                onClick={() => navigate(`/book/${b._id}`)}
+                className="w-full"
+              >
+                View Details
+              </Button>
+            </div>
+          </Card>
+        ))}
+      </div>
+    )}
 
-      {/* PAGINATION */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-4 mt-6">
+    {/* PAGINATION */}
+    {totalPages > 1 && !loading && (
+      <div className="flex justify-center items-center gap-4 mt-6">
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          disabled={page === 1}
+          className="px-4 py-1 border rounded disabled:opacity-40"
+        >
+          Prev
+        </button>
 
-          <button
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            disabled={page === 1}
-            className="px-4 py-1 border rounded disabled:opacity-40"
-          >
-            Prev
-          </button>
+        <span className="font-medium">
+          Page {page} of {totalPages}
+        </span>
 
-          <span className="font-medium">
-            Page {page} of {totalPages}
-          </span>
-
-          <button
-            onClick={() =>
-              setPage((p) => Math.min(p + 1, totalPages))
-            }
-            disabled={page === totalPages}
-            className="px-4 py-1 border rounded disabled:opacity-40"
-          >
-            Next
-          </button>
-
-        </div>
-      )}
-    </div>
-  );
+        <button
+          onClick={() =>
+            setPage((p) => Math.min(p + 1, totalPages))
+          }
+          disabled={page === totalPages}
+          className="px-4 py-1 border rounded disabled:opacity-40"
+        >
+          Next
+        </button>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default Books;

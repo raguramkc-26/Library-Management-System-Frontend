@@ -27,7 +27,7 @@ const Profile = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  {loading && <Loader />}
 
   if (!user) return <p className="text-center mt-10">No user data</p>;
 

@@ -25,7 +25,7 @@ const PaymentHistory = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  {loading && <Loader />}
 
   if (data.length === 0)
     return (
