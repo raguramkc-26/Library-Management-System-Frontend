@@ -4,7 +4,8 @@ const Topbar = () => {
   const { user } = useAuth();
 
   return (
-    <div className="bg-white border-b px-6 py-4 flex justify-between items-center">
+    <div className="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
+
       <div>
         <h2 className="text-lg font-semibold">
           Welcome, {user?.name || "User"}
@@ -13,6 +14,13 @@ const Topbar = () => {
           Manage your library efficiently
         </p>
       </div>
+
+      <div className="flex items-center gap-4">
+        <div className="w-9 h-9 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
+          {user?.name?.charAt(0) || "U"}
+        </div>
+      </div>
+
     </div>
   );
 };

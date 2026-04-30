@@ -68,15 +68,15 @@ const Sidebar = () => {
   return (
     <>
       {/* SIDEBAR */}
-      <div className="w-64 bg-white border-r flex flex-col">
+      <div className="w-64 bg-gray-900 text-white flex flex-col">
 
         {/* LOGO */}
-        <div className="p-5 border-b">
-          <h1 className="text-xl font-bold">📚 LMS</h1>
-          <p className="text-xs text-gray-500 mt-1">
-            {user?.role === "admin" ? "Admin Panel" : "User Panel"}
-          </p>
-        </div>
+        <div className="p-6 border-b border-gray-800">
+  <h1 className="text-xl font-bold text-white">📚 LMS</h1>
+  <p className="text-xs text-gray-400 mt-1">
+    {user?.role === "admin" ? "Admin Panel" : "User Panel"}
+  </p>
+</div>
 
         {/* NAVIGATION */}
         <div className="flex-1 p-3 space-y-1">
@@ -101,7 +101,7 @@ const Sidebar = () => {
                 key={link.name}
                 to={link.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                     isActive
                       ? "bg-indigo-100 text-indigo-600 font-semibold"
                       : "hover:bg-gray-100"

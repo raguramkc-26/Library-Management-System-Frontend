@@ -1,3 +1,4 @@
+import DashboardLayout from "../../layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import { getMyBorrowings } from "../../services/bookService";
 import { toast } from "react-toastify";
@@ -48,13 +49,11 @@ const UserDashboard = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen space-y-6">
+    <DashboardLayout>
 
-      {/* HEADER */}
-      <div>
-        <h1 className="text-3xl font-bold">My Dashboard</h1>
-        <p className="text-gray-500">Your reading overview</p>
-      </div>
+      <h1 className="text-2xl font-bold mb-6">
+        My Dashboard
+      </h1>
 
       {/* STATS */}
       <div className="grid md:grid-cols-3 gap-6">
@@ -64,7 +63,7 @@ const UserDashboard = () => {
       </div>
 
       {/* BOOKS */}
-      <Card className="p-5 rounded-2xl shadow-lg">
+      <Card className="mt-6">
         <h2 className="text-lg font-semibold mb-4">My Books</h2>
 
         {books.length === 0 ? (
@@ -103,12 +102,12 @@ const UserDashboard = () => {
         )}
       </Card>
 
-    </div>
+    </DashboardLayout>
   );
 };
 
 const StatCard = ({ title, value, color }) => (
-  <div className={`p-5 rounded-2xl text-white shadow-lg ${color}`}>
+  <div className={`p-5 rounded-xl text-white shadow ${color}`}>
     <p className="text-sm opacity-80">{title}</p>
     <h2 className="text-3xl font-bold">{value}</h2>
   </div>

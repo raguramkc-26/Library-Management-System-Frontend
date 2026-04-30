@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getAdminStats, getMonthlyStats } from "../../services/adminService";
 import Loader from "../../components/ui/Loader";
 import Card from "../../components/ui/Card";
+import AdminChart from "../../components/charts/AdminChart";
+import DashboardLayout from "../../layouts/DashboardLayout";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({});
@@ -16,8 +18,11 @@ const AdminDashboard = () => {
           getMonthlyStats(),
         ]);
 
-        setStats(statsRes.data || {});
+        setStats(statsRes?.data || {});
         setMonthly(monthlyRes || []);
+
+      } catch (err) {
+        console.error("Dashboard error:", err);
       } finally {
         setLoading(false);
       }
@@ -29,10 +34,43 @@ const AdminDashboard = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6">
-      <Card>Books: {stats.books}</Card>
-    </div>
+    <DashboardLayout>
+
+      {/* HEADER */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <p className="text-gray-500">
+          Monitor library performance and analytics
+        </p>
+      </div>
+
+      {/* KPI CARDS */}
+      <div className="grid md:grid-cols-4 gap-6">
+
+        <StatCard title="Books" value={stats.books} color="bg-indigo-500" />
+
+        <StatCard title="Users" value={stats.users} color="bg-blue-500" />
+
+        <StatCard title="Borrowed" value={stats.borrowed} color="bg-yellow-500" />
+
+        <StatCard title="Revenue" value={`₹${stats.revenue}`} color="bg-green-500" />
+
+      </div>
+
+      {/* CHART */}
+      <div className="mt-6">
+        <AdminChart data={monthly} />
+      </div>
+
+    </DashboardLayout>
   );
 };
+
+const StatCard = ({ title, value, color }) => (
+  <div className={`p-5 rounded-2xl text-white shadow-lg ${color}`}>
+    <p className="text-sm opacity-80">{title}</p>
+    <h2 className="text-3xl font-bold">{value || 0}</h2>
+  </div>
+);
 
 export default AdminDashboard;

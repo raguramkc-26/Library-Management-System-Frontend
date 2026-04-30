@@ -1,25 +1,20 @@
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
-import { Outlet } from "react-router-dom";
+import Sidebar from "../components/layout/Sidebar";
+import Topbar from "../components/layout/Topbar";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ children }) => {
   return (
-    <div className="flex min-h-screen bg-gray-50">
-
+    <div className="flex min-h-screen bg-gray-100">
+      
       {/* SIDEBAR */}
       <Sidebar />
 
       {/* MAIN */}
       <div className="flex-1 flex flex-col">
-
-        {/* TOPBAR */}
+        
         <Topbar />
 
-        {/* CONTENT */}
-        <main className="flex-1 p-6 overflow-y-auto">
-          <div className="max-w-7xl mx-auto">
-            <Outlet />
-          </div>
+        <main className="p-6 flex-1 overflow-y-auto">
+          {children}
         </main>
 
       </div>
