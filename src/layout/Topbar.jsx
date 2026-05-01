@@ -11,13 +11,13 @@ const Topbar = () => {
           Welcome, {user?.name || "User"}
         </h2>
         <p className="text-sm text-gray-500">
-          Manage your library efficiently
+          Library Dashboard
         </p>
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="w-9 h-9 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
-          {user?.name?.charAt(0) || "U"}
+        <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
+          {user?.name?.charAt(0)}
         </div>
       </div>
 
