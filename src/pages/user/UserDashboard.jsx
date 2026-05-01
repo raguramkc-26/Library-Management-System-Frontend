@@ -14,10 +14,14 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  const token = localStorage.getItem("token");
+
+  if (token) {
     fetchData();
-  }, []);
+  } else {
+    setLoading(false);
+  }
+}, []);
 
   const fetchData = async () => {
     try {

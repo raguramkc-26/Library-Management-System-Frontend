@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
 
   // LOGOUT
   const logout = () => {
-    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -33,8 +32,7 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.user);
       } catch (err) {
         console.error("Auth Error:", err.response?.data || err.message);
-
-        // ❗ do NOT delete token blindly
+          localStorage.removeItem("token");
         setUser(null);
       } finally {
         setLoading(false);
