@@ -167,7 +167,7 @@ const BookDetails = () => {
           className="w-40 h-56 object-cover rounded-xl"
         />
 
-        <div className="flex-1 space-y-3">
+        <div className="flex-1 space-y-4">
 
           <h1 className="text-3xl font-bold">{book.title}</h1>
           <p className="text-gray-500">{book.author}</p>
@@ -182,6 +182,16 @@ const BookDetails = () => {
               {book.status}
             </span>
           </p>
+
+          {/* ✅ DESCRIPTION ADDED */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-semibold mb-2 text-gray-700">
+              Description
+            </h3>
+            <p className="text-gray-600 text-sm leading-relaxed">
+              {book.description || "No description available"}
+            </p>
+          </div>
 
           {/* ACTION BUTTONS */}
           <div className="flex gap-3 pt-3">
@@ -242,7 +252,7 @@ const BookDetails = () => {
         </Button>
       </Card>
 
-      {/* REVIEWS LIST */}
+      {/* REVIEWS */}
       <Card className="p-6 space-y-4">
         <h2 className="text-xl font-semibold">Reviews</h2>
 
@@ -251,16 +261,13 @@ const BookDetails = () => {
         ) : (
           reviews.map((r) => (
             <div key={r._id} className="border-b pb-3">
-
               <div className="flex justify-between">
                 <p className="font-semibold">{r.user?.name}</p>
                 <span className="text-yellow-500">
                   {"★".repeat(r.rating)}
                 </span>
               </div>
-
               <p className="text-gray-600 text-sm">{r.comment}</p>
-
             </div>
           ))
         )}
