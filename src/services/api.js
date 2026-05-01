@@ -7,26 +7,18 @@ console.log("BASE URL:",
 import.meta.env.VITE_API_URL);
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-
   console.log("Interceptor token:", token); // DEBUG
-
   if (!token) {
-    console.warn("No token found!");
-  } else {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;
 });
-
 api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      toast.error("Session expired. Please login again");
-
       localStorage.removeItem("token");
-
       window.location.href = "/login";
     }
     return Promise.reject(err);

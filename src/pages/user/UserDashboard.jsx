@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext"
 import { getMyBorrowings } from "../../services/bookService";
 import { toast } from "react-toastify";
 import Card from "../../components/ui/Card";
 import Loader from "../../components/ui/Loader";
-
 const UserDashboard = () => {
+  const { user, loading: authLoading } = useAuth();
+
   const [books, setBooks] = useState([]);
   const [stats, setStats] = useState({
     active: 0,
     overdue: 0,
     returned: 0,
   });
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    fetchData();
-  } else {
-    setLoading(false);
-  }
-}, []);
+    if (!authLoading && user) {
+      fetchData();
+    }
+  }, [authLoading, user]);
 
   const fetchData = async () => {
     try {

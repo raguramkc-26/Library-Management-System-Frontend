@@ -15,12 +15,12 @@ export const AuthProvider = ({ children }) => {
 
   // LOGOUT
   const logout = () => {
+    localStorage.removeItem("token");
     setUser(null);
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
+    const token = localStorage.getItem("token"); 
     if (!token) {
       setLoading(false);
       return;
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.user);
       } catch (err) {
         console.error("Auth Error:", err.response?.data || err.message);
-          localStorage.removeItem("token");
+        localStorage.removeItem("token");
         setUser(null);
       } finally {
         setLoading(false);
