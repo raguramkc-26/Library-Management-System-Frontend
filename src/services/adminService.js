@@ -15,3 +15,7 @@ export const getMonthlyStats = () =>
 // NOTIFY ALL
 export const notifyAll = (message) =>
   api.post("/admin/notify-all", { message });
+
+//Top Books
+export const getTopBooks = () =>
+  api.get("/admin/top-books");
