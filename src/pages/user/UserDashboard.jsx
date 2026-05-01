@@ -23,7 +23,7 @@ const UserDashboard = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      setDataLoading(true);
 
       const res = await getMyBorrowings();
       const data = res?.data?.data || [];
@@ -56,7 +56,7 @@ const UserDashboard = () => {
         err?.response?.data?.message || "Failed to load dashboard"
       );
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
