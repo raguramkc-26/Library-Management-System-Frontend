@@ -19,3 +19,7 @@ export const forgotPassword = (email) =>
 // RESET PASSWORD 
 export const resetPassword = (token, password) =>
   api.post(`/auth/reset-password/${token}`, { password });
+
+// UPDATE PROFILE
+export const updateProfile = (data) =>
+  api.put("/auth/update-profile", data);
