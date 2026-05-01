@@ -16,47 +16,29 @@ const Login = () => {
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Basic validation 
-    if (!form.email || !form.password) {
-      return toast.error("Email and password are required");
-    }
+  try {
+    const res = await loginUser(form);
 
-    try {
-      setLoading(true);
+    localStorage.setItem("token", res.data.token);
 
-      const res = await loginUser(form);
+    login(res.data.user, res.data.token);
 
-      // Defensive check 
-      if (!res?.data?.token || !res?.data?.user) {
-        throw new Error("Invalid login response");
-      }
+    toast.success("Login successful");
 
-      // Save auth
-      login(res.data.user, res.data.token);
-
-      toast.success("Login successful");
-
-      // replace prevents going back to login
+    setTimeout(() => {
       if (res.data.user.role === "admin") {
-        navigate("/admin/dashboard", { replace: true });
+        navigate("/admin/dashboard");
       } else {
-        navigate("/dashboard", { replace: true });
+        navigate("/dashboard");
       }
+    }, 100);
 
-    } catch (err) {
-      console.error(err);
-
-      toast.error(
-        err?.response?.data?.message ||
-        err.message ||
-        "Login failed"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Login failed");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
