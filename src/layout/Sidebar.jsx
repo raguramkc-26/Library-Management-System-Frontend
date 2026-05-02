@@ -8,6 +8,7 @@ import {
   PlusCircle,
   LogOut,
   Bookmark,
+  CreditCard
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -19,6 +20,7 @@ const Sidebar = () => {
     { name: "Dashboard", path: "/dashboard", icon: Home },
     { name: "Browse Books", path: "/dashboard/books", icon: Bookmark },
     { name: "My Books", path: "/dashboard/borrowed", icon: BookOpen },
+    { name: "Payment History", path: "/dashboard/payments", icon: CreditCard },
     { name: "Profile", path: "/dashboard/profile", icon: User },
   ];
 

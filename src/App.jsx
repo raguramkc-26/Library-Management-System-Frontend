@@ -67,6 +67,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           { path: "borrowed", element: <BorrowedBooks /> },
           { path: "notifications", element: <Notifications /> },
+          { path: "payments", element: <PaymentHistory />},
         ],
       },
 
