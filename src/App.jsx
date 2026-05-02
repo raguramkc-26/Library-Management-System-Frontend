@@ -27,6 +27,9 @@ import DashboardLayout from "./layout/DashboardLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 
+// Payments
+import PaymentHistory from "./pages/user/PaymentHistory";
+
 // ERROR
 import ErrorBoundary from "./components/ErrorBoundary";
 
