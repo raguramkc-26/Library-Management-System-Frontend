@@ -1,21 +1,27 @@
 import api from "./api";
 
-// USERS (YOU MISSED THIS)
+// ================= USERS =================
 export const getUsers = () =>
   api.get("/admin/users");
 
-// STATS
+export const updateUserRole = (id, role) =>
+  api.put(`/admin/users/${id}/role`, { role });
+
+export const deleteUser = (id) =>
+  api.delete(`/admin/users/${id}`);
+
+
+// ================= STATS =================
 export const getAdminStats = () =>
   api.get("/admin/stats");
 
-// MONTHLY STATS
 export const getMonthlyStats = () =>
   api.get("/admin/stats/monthly");
 
-// NOTIFY ALL
-export const notifyAll = (message) =>
-  api.post("/admin/notify-all", { message });
-
-//Top Books
 export const getTopBooks = () =>
   api.get("/admin/top-books");
+
+
+// ================= NOTIFICATIONS =================
+export const notifyAll = (message) =>
+  api.post("/admin/notify-all", { message });
