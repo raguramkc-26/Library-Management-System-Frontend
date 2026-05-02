@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
-// ✅ CORRECT SERVICES
 import { getBookById } from "../../services/bookService";
-
 import {
   borrowBook,
   reserveBook,
@@ -60,7 +58,6 @@ const BookDetails = () => {
       setReviews(reviewRes?.data?.data || []);
       setAvgRating(avgRes?.data?.data?.avgRating || 0);
 
-      // ✅ Fetch borrow status only if logged in
       if (user) {
         const borrowRes = await getMyBorrowings();
 
@@ -81,10 +78,28 @@ const BookDetails = () => {
     }
   };
 
+  // ================= SAFE FLAGS =================
+
+  const status = book?.status?.toLowerCase();
+  const isAvailable = status === "available";
+  const isBorrowed = status === "borrowed";
+
+  const canBorrow = user && isAvailable && !borrowRecord;
+  const canReserve = user && isBorrowed && !borrowRecord;
+  const canReturn = !!borrowRecord;
+
   // ================= ACTIONS =================
 
   const handleBorrow = async () => {
     if (!user) return toast.error("Login required");
+
+    if (!isAvailable) {
+      return toast.error("Book is no longer available");
+    }
+
+    if (borrowRecord) {
+      return toast.error("You already borrowed this book");
+    }
 
     try {
       setActionLoading(true);
@@ -101,11 +116,15 @@ const BookDetails = () => {
   const handleReserve = async () => {
     if (!user) return toast.error("Login required");
 
+    if (!isBorrowed) {
+      return toast.error("Book is not borrowed");
+    }
+
     try {
       setActionLoading(true);
       await reserveBook(id);
       toast.success("Book reserved");
-      fetchData(); // ✅ IMPORTANT FIX
+      fetchData();
     } catch (err) {
       toast.error(err?.response?.data?.message || "Reserve failed");
     } finally {
@@ -163,9 +182,6 @@ const BookDetails = () => {
   if (loading) return <Loader />;
   if (!book) return <EmptyState title="Book not found" />;
 
-  const status = book.status?.toLowerCase();
-  const isAvailable = status === "available";
-
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
 
@@ -207,19 +223,19 @@ const BookDetails = () => {
           {/* ACTION BUTTONS */}
           <div className="flex gap-3 pt-3">
 
-            {isAvailable && !borrowRecord && (
+            {canBorrow && (
               <Button onClick={handleBorrow} disabled={actionLoading}>
                 {actionLoading ? "Processing..." : "Borrow"}
               </Button>
             )}
 
-            {!isAvailable && !borrowRecord && (
+            {canReserve && (
               <Button onClick={handleReserve} disabled={actionLoading}>
                 Reserve
               </Button>
             )}
 
-            {borrowRecord && (
+            {canReturn && (
               <Button
                 onClick={handleReturn}
                 className="bg-red-500 hover:bg-red-600"
