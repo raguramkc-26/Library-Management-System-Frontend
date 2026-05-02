@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getMyBorrowings } from "../../services/bookService";
+import { getMyBorrowings } from "../../services/borrowService";
 import { toast } from "react-toastify";
 import Loader from "../../components/ui/Loader";
 import StatCard from "../../components/ui/StatCard";

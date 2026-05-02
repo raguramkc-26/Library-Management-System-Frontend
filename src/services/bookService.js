@@ -1,13 +1,17 @@
 import api from "./api";
 
-export const getMyBorrowings = () =>
-  api.get("/borrow/me");
+// BOOKS ONLY
+export const getAllBooks = (params) =>
+  api.get("/books", { params });
 
-export const borrowBook = (bookId) =>
-  api.post(`/borrow/${bookId}`);
+export const getBookById = (id) =>
+  api.get(`/books/${id}`);
 
-export const reserveBook = (bookId) =>
-  api.post(`/borrow/${bookId}/reserve`);
+export const createBook = (data) =>
+  api.post("/books", data);
 
-export const returnBook = (borrowId) =>
-  api.put(`/borrow/${borrowId}/return`);
+export const updateSingleBook = (id, data) =>
+  api.put(`/books/${id}`, data);
+
+export const deleteBook = (id) =>
+  api.delete(`/books/${id}`);

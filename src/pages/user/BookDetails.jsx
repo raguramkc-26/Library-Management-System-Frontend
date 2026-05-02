@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
+// ✅ CORRECT SERVICES
+import { getBookById } from "../../services/bookService";
+
 import {
-  getBookById,
   borrowBook,
   reserveBook,
   returnBook,
   getMyBorrowings
-} from "../../services/bookService";
+} from "../../services/borrowService";
 
 import {
   getReviews,
@@ -58,6 +60,7 @@ const BookDetails = () => {
       setReviews(reviewRes?.data?.data || []);
       setAvgRating(avgRes?.data?.data?.avgRating || 0);
 
+      // ✅ Fetch borrow status only if logged in
       if (user) {
         const borrowRes = await getMyBorrowings();
 
@@ -66,14 +69,19 @@ const BookDetails = () => {
         );
 
         setBorrowRecord(record || null);
+      } else {
+        setBorrowRecord(null);
       }
 
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to load book");
     } finally {
       setLoading(false);
     }
   };
+
+  // ================= ACTIONS =================
 
   const handleBorrow = async () => {
     if (!user) return toast.error("Login required");
@@ -97,6 +105,7 @@ const BookDetails = () => {
       setActionLoading(true);
       await reserveBook(id);
       toast.success("Book reserved");
+      fetchData(); // ✅ IMPORTANT FIX
     } catch (err) {
       toast.error(err?.response?.data?.message || "Reserve failed");
     } finally {
@@ -149,11 +158,13 @@ const BookDetails = () => {
     }
   };
 
+  // ================= UI =================
+
   if (loading) return <Loader />;
   if (!book) return <EmptyState title="Book not found" />;
 
-  const isAvailable = book.status === "Available";
-  const isBorrowed = book.status === "Borrowed";
+  const status = book.status?.toLowerCase();
+  const isAvailable = status === "available";
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -183,7 +194,7 @@ const BookDetails = () => {
             </span>
           </p>
 
-          {/* ✅ DESCRIPTION ADDED */}
+          {/* DESCRIPTION */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="font-semibold mb-2 text-gray-700">
               Description
@@ -202,7 +213,7 @@ const BookDetails = () => {
               </Button>
             )}
 
-            {isBorrowed && !borrowRecord && (
+            {!isAvailable && !borrowRecord && (
               <Button onClick={handleReserve} disabled={actionLoading}>
                 Reserve
               </Button>
