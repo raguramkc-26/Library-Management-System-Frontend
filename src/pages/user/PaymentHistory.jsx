@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMyBorrowings } from "../../services/bookService";
+import { getMyBorrowings } from "../../services/borrowService";
 import { toast } from "react-toastify";
 import Card from "../../components/ui/Card";
 import Loader from "../../components/ui/Loader";
