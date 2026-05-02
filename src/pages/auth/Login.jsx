@@ -22,8 +22,13 @@ const Login = () => {
       setLoading(true);
 
       const res = await loginUser(form);
-
-      login(res.data.user, res.data.token);
+      console.log("LOGIN RESPONSE:", res.data);
+      const token = res.data.token || res.data.data?.token;
+      const user = res.data.user || res.data.data?.user;
+      if (!token || !user) {
+        throw new Error("Invalid login response structure");
+      }
+      login(user, token);
 
       toast.success("Login successful");
 
