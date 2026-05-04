@@ -8,6 +8,7 @@ const BorrowedBooks = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [payingId, setPayingId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -90,7 +91,7 @@ const BorrowedBooks = () => {
   if (loading) {
     return <div className="p-6">Loading...</div>;
   }
-  const navigate = useNavigate();
+
   return (
     <div className="p-6 space-y-4">
 
@@ -100,13 +101,14 @@ const BorrowedBooks = () => {
         <p className="text-gray-400">No borrowed books</p>
       ) : (
         books.map((b) => {
+          if (!b) return null;
           const isOverdue =
             b.status === "borrowed" &&
             new Date(b.dueDate) < new Date();
 
           return (
             <div
-              key={b._id}
+              key={b._id || Math.random()} 
               className="bg-white p-4 rounded-xl shadow flex justify-between items-center"
             >
               {/* LEFT */}
