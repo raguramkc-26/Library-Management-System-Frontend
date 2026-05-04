@@ -2,13 +2,13 @@ import api from "./api";
 
 // ================= USERS =================
 export const getUsers = () =>
-  api.get("/admin/users");
+  api.get("/users");
 
 export const updateUserRole = (id, role) =>
-  api.put(`/admin/users/${id}/role`, { role });
+  api.put(`/users/${id}`, { role });
 
 export const deleteUser = (id) =>
-  api.delete(`/admin/users/${id}`);
+  api.delete(`/users/${id}`);
 
 
 // ================= STATS =================
