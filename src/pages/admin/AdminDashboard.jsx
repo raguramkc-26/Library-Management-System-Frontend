@@ -18,6 +18,7 @@ import {
 } from "../../services/adminService";
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
   const [stats, setStats] = useState({
     books: 0,
     users: 0,
@@ -25,10 +26,12 @@ const AdminDashboard = () => {
     revenue: 0,
   });
 
+  if (!user) return null;
+
   const [monthly, setMonthly] = useState([]);
   const [topBooks, setTopBooks] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchDashboard();
   }, []);
@@ -53,9 +56,8 @@ const AdminDashboard = () => {
       setLoading(false);
     }
   };
-
+  if (!user) return null;
   if (loading) return <Loader />;
-  const navigate = useNavigate();
   return (
     <div className="space-y-6">
 
