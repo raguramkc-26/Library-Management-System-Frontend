@@ -9,11 +9,12 @@ import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
 import Loader from "../../components/ui/Loader";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(null); // track per user
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -50,6 +51,7 @@ const AdminUsers = () => {
       setActionLoading(null);
     }
   };
+  const navigate = useNavigate();
 
   // DELETE USER
   const handleDelete = async (id) => {
@@ -152,7 +154,7 @@ const AdminUsers = () => {
               </tbody>
 
             </table>
-
+            <button onClick={() => navigate(-1)}className="mb-4 px-3 py-2 bg-gray-200 rounded">Back</button>
           </div>
         )}
       </Card>

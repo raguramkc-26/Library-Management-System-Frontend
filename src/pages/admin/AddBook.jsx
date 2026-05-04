@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createBook } from "../../services/bookService";
 import { toast } from "react-toastify";
 import Button from "../../components/ui/Button";
-
+import { useNavigate } from "react-router-dom";
 const AddBook = () => {
   const [form, setForm] = useState({
     title: "",
@@ -76,6 +76,7 @@ const AddBook = () => {
       setLoading(false);
     }
   };
+   const navigate = useNavigate();
 
   return (
     <div className="max-w-xl mx-auto p-6">
@@ -162,6 +163,9 @@ const AddBook = () => {
         </Button>
 
       </form>
+      <div className="flex justify-between items-center mb-4">
+      <button onClick={() => navigate(-1)}>Back</button> 
+      </div>
     </div>
   );
 };

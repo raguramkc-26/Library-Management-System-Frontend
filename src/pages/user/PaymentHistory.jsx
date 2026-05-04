@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPaymentHistory } from "../../services/paymentService";
-
+import { useNavigate } from "react-router-dom";
 const PaymentHistory = () => {
   const [payments, setPayments] = useState([]);
 
@@ -8,7 +8,7 @@ const PaymentHistory = () => {
     const res = await getPaymentHistory();
     setPayments(res.data.data);
   };
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchData();
   }, []);
@@ -24,6 +24,7 @@ const PaymentHistory = () => {
             <p>₹{p.amount}</p>
             <p>Status: {p.status}</p>
           </div>
+          <button onClick={() => navigate(-1)}>Back</button>
         </div>
       ))}
     </div>

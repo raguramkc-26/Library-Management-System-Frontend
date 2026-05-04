@@ -3,6 +3,7 @@ import StatCard from "../../components/ui/StatCard";
 import Loader from "../../components/ui/Loader";
 import AdminChart from "../../components/charts/AdminChart";
 import TopBooksChart from "../../components/charts/TopBooksChart";
+import { useNavigate } from "react-router-dom"; 
 import {
   BookOpen,
   Users,
@@ -54,7 +55,7 @@ const AdminDashboard = () => {
   };
 
   if (loading) return <Loader />;
-
+  const navigate = useNavigate();
   return (
     <div className="space-y-6">
 
@@ -88,7 +89,7 @@ const AdminDashboard = () => {
           <h2 className="font-semibold mb-4">Top Books</h2>
           <TopBooksChart data={topBooks} />
         </div>
-
+       <button onClick={() => navigate(-1)}className="mb-4 px-3 py-2 bg-gray-200 rounded">Back</button> 
       </div>
 
     </div>

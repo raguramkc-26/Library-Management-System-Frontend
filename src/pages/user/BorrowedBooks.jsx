@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getMyBorrowings, returnBook } from "../../services/borrowService";
 import { createOrder, verifyPayment } from "../../services/paymentService";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const BorrowedBooks = () => {
   const [books, setBooks] = useState([]);
@@ -89,7 +90,7 @@ const BorrowedBooks = () => {
   if (loading) {
     return <div className="p-6">Loading...</div>;
   }
-
+  const navigate = useNavigate();
   return (
     <div className="p-6 space-y-4">
 
@@ -175,7 +176,7 @@ const BorrowedBooks = () => {
                       : `Pay ₹${b.fineAmount}`}
                   </button>
                 )}
-
+                <button onClick={() => navigate(-1)}>Back</button>
               </div>
             </div>
           );

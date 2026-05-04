@@ -6,6 +6,7 @@ import {
 } from "../../services/reviewService";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const AdminReviews = () => {
   const { user, loading } = useAuth();
@@ -61,6 +62,7 @@ const AdminReviews = () => {
       toast.error(err.response?.data?.message || "Reject failed");
     }
   };
+   const navigate = useNavigate();
 
   // AUTH GUARD
   if (loading) {
@@ -128,6 +130,7 @@ const AdminReviews = () => {
                   Reject
                 </button>
               </div>
+              <button onClick={() => navigate(-1)}>Back</button> 
             </div>
           ))}
         </div>

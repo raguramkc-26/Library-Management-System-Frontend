@@ -21,6 +21,7 @@ import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
 import Loader from "../../components/ui/Loader";
 import EmptyState from "../../components/ui/EmptyState";
+import { useNavigate } from "react-router-dom";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -177,6 +178,8 @@ const BookDetails = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   // ================= UI =================
 
   if (loading) return <Loader />;
@@ -298,6 +301,7 @@ const BookDetails = () => {
             </div>
           ))
         )}
+        <button onClick={() => navigate(-1)}>Back</button>
       </Card>
 
     </div>
