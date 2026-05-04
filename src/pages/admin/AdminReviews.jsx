@@ -130,7 +130,6 @@ const AdminReviews = () => {
                   Reject
                 </button>
               </div>
-              <button onClick={() => navigate(-1)}>Back</button> 
             </div>
           ))}
         </div>

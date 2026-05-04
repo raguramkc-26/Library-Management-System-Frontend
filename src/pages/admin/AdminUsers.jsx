@@ -154,7 +154,6 @@ const AdminUsers = () => {
               </tbody>
 
             </table>
-            <button onClick={() => navigate(-1)}className="mb-4 px-3 py-2 bg-gray-200 rounded">Back</button>
           </div>
         )}
       </Card>

@@ -90,7 +90,6 @@ const AdminDashboard = () => {
           <h2 className="font-semibold mb-4">Top Books</h2>
           <TopBooksChart data={topBooks} />
         </div>
-       <button onClick={() => navigate(-1)}className="mb-4 px-3 py-2 bg-gray-200 rounded">Back</button> 
       </div>
 
     </div>

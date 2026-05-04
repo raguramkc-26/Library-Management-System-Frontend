@@ -164,7 +164,6 @@ const AddBook = () => {
 
       </form>
       <div className="flex justify-between items-center mb-4">
-      <button onClick={() => navigate(-1)}>Back</button> 
       </div>
     </div>
   );
