@@ -16,6 +16,7 @@ import {
   getMonthlyStats,
   getTopBooks
 } from "../../services/adminService";
+import { useAuth } from "../../../context/AuthContext";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
