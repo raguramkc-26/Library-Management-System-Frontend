@@ -16,7 +16,7 @@ import {
   getMonthlyStats,
   getTopBooks
 } from "../../services/adminService";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -26,8 +26,6 @@ const AdminDashboard = () => {
     borrowed: 0,
     revenue: 0,
   });
-
-  if (!user) return null;
 
   const [monthly, setMonthly] = useState([]);
   const [topBooks, setTopBooks] = useState([]);
