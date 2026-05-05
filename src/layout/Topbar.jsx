@@ -21,7 +21,7 @@ const Topbar = () => {
         {/* BACK BUTTON */}
         <button
           onClick={() => navigate(-1)}
-          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+          className="text-gray-600 hover:text-black flex items-center gap-1"
         >
           ← Back
         </button>
