@@ -4,17 +4,22 @@ import {
   updateUserRole,
   deleteUser,
 } from "../../services/adminService";
-
 import Card from "../../components/ui/Card";
 import EmptyState from "../../components/ui/EmptyState";
 import Loader from "../../components/ui/Loader";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+
+  const { user: currentUser } = useAuth();
+  const currentUserId = currentUser?._id;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -32,7 +37,7 @@ const AdminUsers = () => {
     }
   };
 
-  // CHANGE ROLE
+  // ================= ROLE CHANGE =================
   const handleRoleChange = async (id, role) => {
     try {
       setActionLoading(id);
@@ -40,23 +45,17 @@ const AdminUsers = () => {
       await updateUserRole(id, role);
 
       toast.success("Role updated");
-
-      setUsers((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, role } : u))
-      );
-
+      fetchUsers();
     } catch (err) {
       toast.error(err?.response?.data?.message || "Update failed");
     } finally {
       setActionLoading(null);
     }
   };
-  const navigate = useNavigate();
 
-  // DELETE USER
+  // ================= DELETE USER =================
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Delete this user?");
-    if (!confirmDelete) return;
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
 
     try {
       setActionLoading(id);
@@ -64,9 +63,7 @@ const AdminUsers = () => {
       await deleteUser(id);
 
       toast.success("User deleted");
-
-      setUsers((prev) => prev.filter((u) => u._id !== id));
-
+      fetchUsers();
     } catch (err) {
       toast.error(err?.response?.data?.message || "Delete failed");
     } finally {
@@ -123,11 +120,14 @@ const AdminUsers = () => {
                       {u.email}
                     </td>
 
-                    {/* ROLE DROPDOWN */}
+                    {/* ROLE */}
                     <td className="py-3 px-2">
                       <select
                         value={u.role}
-                        disabled={actionLoading === u._id}
+                        disabled={
+                          u._id === currentUserId ||
+                          actionLoading === u._id
+                        }
                         onChange={(e) =>
                           handleRoleChange(u._id, e.target.value)
                         }
@@ -140,23 +140,38 @@ const AdminUsers = () => {
 
                     {/* ACTIONS */}
                     <td className="py-3 px-2">
-                      <button
-                        onClick={() => handleDelete(u._id)}
-                        disabled={actionLoading === u._id}
-                        className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition disabled:opacity-50"
-                      >
-                        {actionLoading === u._id ? "..." : "Delete"}
-                      </button>
+                      {u._id === currentUserId ? (
+                        <span className="text-gray-400 text-sm font-medium">
+                          Not allowed
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleDelete(u._id)}
+                          disabled={actionLoading === u._id}
+                          className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition disabled:opacity-50"
+                        >
+                          {actionLoading === u._id ? "..." : "Delete"}
+                        </button>
+                      )}
                     </td>
-
                   </tr>
                 ))}
               </tbody>
 
             </table>
+
           </div>
         )}
       </Card>
+
+      {/* BACK BUTTON */}
+      <button
+        onClick={() => navigate(-1)}
+        className="px-3 py-2 bg-gray-200 rounded"
+      >
+        Back
+      </button>
+
     </div>
   );
 };
