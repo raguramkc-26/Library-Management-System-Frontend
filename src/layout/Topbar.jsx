@@ -13,7 +13,7 @@ const Topbar = () => {
       return;
     }
     if (window.history.length > 1) {
-      navigate(-1);
+      navigate(-1, { replace: true });
     } else {
       navigate(user?.role === "admin" ? "/admin/dashboard" : "/dashboard");
     }
@@ -27,7 +27,7 @@ const Topbar = () => {
 
         {/* BACK BUTTON */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
           className="text-gray-600 hover:text-black flex items-center gap-1"
         >
           ← Back
