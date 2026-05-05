@@ -4,6 +4,13 @@ import { useNavigate } from "react-router-dom";
 const Topbar = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(user?.role === "admin" ? "/admin/dashboard" : "/dashboard");
+    }
+  }
 
   return (
     <div className="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
