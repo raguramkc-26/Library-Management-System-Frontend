@@ -4,7 +4,14 @@ import { useNavigate } from "react-router-dom";
 const Topbar = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleBack = () => {
+    const path = location.pathname;
+    const isMainPage = path === "/dashboard" || path === "/admin/dashboard";
+    if (isMainPage) {
+      return;
+    }
     if (window.history.length > 1) {
       navigate(-1);
     } else {
