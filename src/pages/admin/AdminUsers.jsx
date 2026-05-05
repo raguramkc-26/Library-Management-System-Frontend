@@ -36,7 +36,8 @@ const AdminUsers = () => {
       setLoading(false);
     }
   };
-
+  
+  const hasAdmin = users.some((u) => u.role === "admin");
   // ================= ROLE CHANGE =================
   const handleRoleChange = async (id, role) => {
     try {
@@ -70,6 +71,14 @@ const AdminUsers = () => {
       setActionLoading(null);
     }
   };
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/admin/dashboard");
+    }
+  }
 
   if (loading) return <Loader />;
 
