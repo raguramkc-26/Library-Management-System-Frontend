@@ -178,7 +178,6 @@ const BorrowedBooks = () => {
                       : `Pay ₹${b.fineAmount}`}
                   </button>
                 )}
-                <button onClick={() => navigate(-1)}>Back</button>
               </div>
             </div>
           );

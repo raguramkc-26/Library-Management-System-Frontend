@@ -24,7 +24,6 @@ const PaymentHistory = () => {
             <p>₹{p.amount}</p>
             <p>Status: {p.status}</p>
           </div>
-          <button onClick={() => navigate(-1)}>Back</button>
         </div>
       ))}
     </div>

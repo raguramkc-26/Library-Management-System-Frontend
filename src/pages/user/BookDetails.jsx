@@ -301,7 +301,6 @@ const BookDetails = () => {
             </div>
           ))
         )}
-        <button onClick={() => navigate(-1)}>Back</button>
       </Card>
 
     </div>
